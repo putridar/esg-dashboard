@@ -20,13 +20,24 @@ firebase_admin.initialize_app(cred)
 db = firestore.client()
 
 #get document id for green bond
-doc_ref = list(db.collection("green bond").get())
+doc_ref = list(db.collection("asian bank").get())
 #document id
 ids = []
 for x in doc_ref:
   ids.append(x.id)
 
-
+## DATA FROM FIREBASE
+green_bond = {}
+unpri_data = {}
+for x in ids:
+  doc = db.collection("asian bank").document(x).get()
+  if doc.exists:
+    curr = doc.to_dict()
+    if "green bond" in curr:
+      green_bond[x] = curr['green bond']
+    if "unpri" in curr:
+      unpri_data[x] = curr['unpri']
+        
 #keydown function
 def click():
     esg_rating = refinitiv.RefinitivList(variable.get())
@@ -51,27 +62,23 @@ def click():
              fg='#FFFFFF').place(x=place_x, y=place_y+20)
         place_x += 170
 
-    ## DATA FROM FIREBASE
-    data = {}
-    for x in ids:
-      doc = db.collection("green bond").document(x).get()
-      if doc.exists:
-        curr = doc.to_dict()
-        data[x] = curr['value']
-
-    green_bond_box = tk.Canvas(window, width=150, height=100, bg='#401564', highlightthickness=0).place(x=10, y=300)
+    ## GREEN BOND
+    
+    green_bond_box = tk.Canvas(window, width=250, height=100, bg='#401564', highlightthickness=0).place(x=10, y=300)
     tk.Label(green_bond_box, text='Green Bond', font='Montserrat 12', bg='#401564',
         fg='#FFFFFF').place(x=10, y=300)
-    tk.Label(green_bond_box, text=data[variable.get()], font='Montserrat 23', bg='#401564',
+    tk.Label(green_bond_box, text=green_bond[variable.get()], font='Montserrat 23', bg='#401564',
         fg='#FFFFFF').place(x=10, y=330)
 
     ## DATA FROM UNPRI
 
-    unpri_box = tk.Canvas(window, width=150, height=100, bg='#401564', highlightthickness=0).place(x=180, y=300)
+    unpri_box = tk.Canvas(window, width=150, height=100, bg='#401564', highlightthickness=0).place(x=290, y=300)
     tk.Label(unpri_box, text='UNPRI Member', font='Montserrat 12', bg='#401564',
-        fg='#FFFFFF').place(x=180, y=300)
+        fg='#FFFFFF').place(x=290, y=300)
+    #tk.Label(unpri_box, text=unpri_data[variable.get()], font='Montserrat 23', bg='#401564',
+    #    fg='#FFFFFF').place(x=290, y=330)
     tk.Label(unpri_box, text=unpri.is_member(variable.get()), font='Montserrat 23', bg='#401564',
-        fg='#FFFFFF').place(x=180, y=330)
+        fg='#FFFFFF').place(x=290, y=330)
 
     ## COMPANY LOGO
 
