@@ -5,6 +5,7 @@ from io import BytesIO
 import requests
 
 import refinitiv
+import unpri
 
 import os
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.path.realpath("group18---natwest-firebase.json")
@@ -27,7 +28,7 @@ for x in doc_ref:
 
 
 #keydown function
-def click_rating():
+def click():
     esg_rating = refinitiv.RefinitivList(variable.get())
 
     esg_score = esg_rating[2]
@@ -39,6 +40,8 @@ def click_rating():
 
     place_x = 10
     place_y = 160
+
+    ## ESG RATING
     
     for i in range(0, len(esg_values)):
         rating_box = tk.Canvas(window, width=150, height=100, bg='#401564', highlightthickness=0).place(x=place_x, y=place_y)
@@ -48,7 +51,7 @@ def click_rating():
              fg='#FFFFFF').place(x=place_x, y=place_y+20)
         place_x += 170
 
-    #read data from firebase
+    ## DATA FROM FIREBASE
     data = {}
     for x in ids:
       doc = db.collection("green bond").document(x).get()
@@ -61,6 +64,23 @@ def click_rating():
         fg='#FFFFFF').place(x=10, y=300)
     tk.Label(green_bond_box, text=data[variable.get()], font='Montserrat 23', bg='#401564',
         fg='#FFFFFF').place(x=10, y=330)
+
+    ## DATA FROM UNPRI
+
+    unpri_box = tk.Canvas(window, width=150, height=100, bg='#401564', highlightthickness=0).place(x=180, y=300)
+    tk.Label(unpri_box, text='UNPRI Member', font='Montserrat 12', bg='#401564',
+        fg='#FFFFFF').place(x=180, y=300)
+    tk.Label(unpri_box, text=unpri.is_member(variable.get()), font='Montserrat 23', bg='#401564',
+        fg='#FFFFFF').place(x=180, y=330)
+
+    ## COMPANY LOGO
+
+    logo = Image.open('ocbc-pic.png')
+    logo = logo.resize((int(logo.size[0]/3),int(logo.size[1]/3)))
+    logo = ImageTk.PhotoImage(logo)
+    logo_label = tk.Label(image=logo, bg = "white")
+    logo_label.image = logo
+    logo_label.place(x=800, y=100)
 
 ## Initiate Window
 window = tk.Tk()
@@ -90,11 +110,11 @@ tk.Label(window, text="Enter the company name you want to search for: ").place(x
 variable = tk.StringVar(window)
 variable.set("ocbc") # default value
 
-w = tk.OptionMenu(window, variable, "ocbc", "dbs", "apple")
+w = tk.OptionMenu(window, variable, "ocbc", "dbs", "uob")
 w.place(x=0, y=90)
 
 ## Submit Button
-tk.Button(window, text="Submit", width = 6, command = click_rating).place(x=80, y=90)
+tk.Button(window, text="Submit", width = 6, command = click).place(x=80, y=90)
 
     
 window.mainloop()
