@@ -29,6 +29,8 @@ for x in doc_ref:
 ## DATA FROM FIREBASE
 green_bond = {}
 unpri_data = {}
+summary = {}
+
 for x in ids:
   doc = db.collection("asian bank").document(x).get()
   if doc.exists:
@@ -37,6 +39,8 @@ for x in ids:
       green_bond[x] = curr['green bond']
     if "unpri" in curr:
       unpri_data[x] = curr['unpri']
+    if "summary" in curr:
+      summary[x] = curr['summary']
         
 #keydown function
 def click():
@@ -77,7 +81,7 @@ def click():
         fg='#FFFFFF').place(x=290, y=300)
     #tk.Label(unpri_box, text=unpri_data[variable.get()], font='Montserrat 23', bg='#401564',
     #    fg='#FFFFFF').place(x=290, y=330)
-    tk.Label(unpri_box, text=unpri.is_member(variable.get()), font='Montserrat 23', bg='#401564',
+    tk.Label(unpri_box, text=unpri_data[variable.get()], font='Montserrat 23', bg='#401564',
         fg='#FFFFFF').place(x=290, y=330)
 
     ## COMPANY LOGO
@@ -88,6 +92,15 @@ def click():
     logo_label = tk.Label(image=logo, bg = "white")
     logo_label.image = logo
     logo_label.place(x=800, y=100)
+
+    ## TEXT SUMMARY
+
+    summary_box = tk.Canvas(window, width=500, height=500, bg='#FFFFFF', highlightthickness=0).place(x=800, y=450)
+    tk.Label(summary_box, text='Text Summary', font='Montserrat 12', bg='black',
+        fg='white').place(x=800, y=300)
+    tk.Label(summary_box, text=summary[variable.get()], font='Montserrat 12', bg='#FFFFFF',
+        fg='black').place(x=800, y=330)
+    
 
 ## Initiate Window
 window = tk.Tk()
