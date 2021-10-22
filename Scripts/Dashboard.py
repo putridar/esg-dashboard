@@ -71,10 +71,12 @@ window.configure(bg = "#FFFFFF")
 ## FUNCTION
 def click():
 
+    canvas.create_rectangle(359.0,210.0, 1500.0, 350.0, fill="#FFFFFF",outline="")
+
     #COMPANY PROFILE
     #canvas.create_text(361.0,135.0,anchor="nw",text="Company: "+variable.get().upper(),
                        #fill="#7B85F7",font=("Raleway SemiBold", 24 * -1))
-    canvas.create_rectangle(361.0,135.0, 900.0, 200.0, fill="white",outline="")
+    canvas.create_rectangle(361.0,135.0, 900.0, 200.0, fill="#FFFFFF",outline="")
     comp_name = canvas.create_text(361.0,135.0,anchor="nw",
                                    text="Company: "+variable.get().upper(),
                                    fill="#7B85F7",font=("Raleway SemiBold", 24 * -1))
@@ -88,12 +90,11 @@ def click():
                        fill="#000000",font=("Raleway Regular", 14 * -1))
 
      ## TEXT SUMMARY
-    canvas.create_rectangle(359.0,210.0, 900.0, 400.0, fill="white",outline="")
+    canvas.create_rectangle(359.0,210.0, 1500.0, 350.0, fill="#FFFFFF",outline="")
     canvas.create_text(359.0, 210.0, anchor="nw",text="ESG Facts",fill="#192159",
                        font=("Raleway Bold", 18 * -1))
-    summary_text = summary.get_summary(variable.get())
-    sum_label = tk.Label(window, text=summary_text, font=("Raleway Bold", 14 * -1),
-                 wraplength=1000, justify="left", fg="#BCBCBC")
+    sum_label = tk.Label(window, text=summary.get_summary(variable.get()), font=("Raleway Bold", 14 * -1),
+                 wraplength=900, justify="left", fg="#BCBCBC")
     sum_label.place(x=355, y=230)
     #canvas.create_text(359.0, 243.0,anchor="nw",
     #                   text= summary_text,
@@ -101,44 +102,70 @@ def click():
      #                  font=("Raleway Bold", 14 * -1))
 
     #ESG RATING
+
     esg_rating = refinitiv.RefinitivList(variable.get())
-
-    esg_score = esg_rating[2][-2:]
-    env_score = esg_rating[5][-2:]
-    social_score = esg_rating[10][-2:]
-    gov_score = esg_rating[16][-2:]
-
-    #boxes
-    canvas.create_rectangle(350.0,357.0, 516.0, 465.0, fill="#F5F4FD",outline="")
-    canvas.create_rectangle(910.0,357.0,1076.0,465.0,fill="#F5F4FD",outline="")
-    canvas.create_rectangle( 540.0,357.0,706.0,465.0,fill="#F5F4FD",outline="")
-    canvas.create_rectangle(725.0,357.0,891.0,465.0,fill="#F5F4FD",outline="")
-    #label
-    canvas.create_text(400.0,370.0,anchor="nw",text="Overall",fill="#192159",
-                       font=("Raleway Bold", 18 * -1))
-    canvas.create_text(941.0,369.0,anchor="nw",text="Governance",fill="#192159",
-                       font=("Raleway Bold", 18 * -1))
-    canvas.create_text(568.0,369.0,anchor="nw",text="Environment",fill="#192159",
-                       font=("Raleway Bold", 18 * -1))
-    canvas.create_text(782.0,369.0,anchor="nw",text="Social",fill="#192159",
-                       font=("Raleway Bold", 18 * -1))
-    #values
-    def what_color(score):
-        if (score < 30):
-            return "#FF8080"
-        elif (score < 60):
-            return "#FFAD71"
-        else:
-            return "#90D27F"
     
-    canvas.create_text(405.0, 393.0, anchor="nw",text=esg_score, fill=what_color(int(esg_score)),
-                       font=("Raleway SemiBold", 48 * -1))
-    canvas.create_text(595.0,393.0,anchor="nw",text=env_score,fill=what_color(int(env_score)),
-                       font=("Raleway SemiBold", 48 * -1))
-    canvas.create_text(780.0,393.0,anchor="nw",text=social_score,fill=what_color(int(social_score)),
-                       font=("Raleway SemiBold", 48 * -1))
-    canvas.create_text(965.0, 393.0,anchor="nw", text=gov_score, fill=what_color(int(gov_score)),
-                       font=("Raleway SemiBold", 48 * -1))
+    if (esg_rating == 'NA'):
+        #boxes
+        canvas.create_rectangle(350.0,357.0, 516.0, 465.0, fill="#F5F4FD",outline="")
+        canvas.create_rectangle(910.0,357.0,1076.0,465.0,fill="#F5F4FD",outline="")
+        canvas.create_rectangle( 540.0,357.0,706.0,465.0,fill="#F5F4FD",outline="")
+        canvas.create_rectangle(725.0,357.0,891.0,465.0,fill="#F5F4FD",outline="")
+        #label
+        canvas.create_text(400.0,370.0,anchor="nw",text="Overall",fill="#192159",
+                           font=("Raleway Bold", 18 * -1))
+        canvas.create_text(941.0,369.0,anchor="nw",text="Governance",fill="#192159",
+                           font=("Raleway Bold", 18 * -1))
+        canvas.create_text(568.0,369.0,anchor="nw",text="Environment",fill="#192159",
+                           font=("Raleway Bold", 18 * -1))
+        canvas.create_text(782.0,369.0,anchor="nw",text="Social",fill="#192159",
+                           font=("Raleway Bold", 18 * -1))
+        
+        canvas.create_text(405.0, 393.0, anchor="nw",text='NA', fill="#192159",
+                           font=("Raleway SemiBold", 48 * -1))
+        canvas.create_text(595.0,393.0,anchor="nw",text='NA',fill="#192159",
+                           font=("Raleway SemiBold", 48 * -1))
+        canvas.create_text(780.0,393.0,anchor="nw",text='NA',fill="#192159",
+                           font=("Raleway SemiBold", 48 * -1))
+        canvas.create_text(965.0, 393.0,anchor="nw", text='NA', fill="#192159",
+                           font=("Raleway SemiBold", 48 * -1))
+    else:
+        esg_score = esg_rating[1][-2:]
+        env_score = esg_rating[2][-2:]
+        social_score = esg_rating[3][-2:]
+        gov_score = esg_rating[4][-2:]
+
+        #boxes
+        canvas.create_rectangle(350.0,357.0, 516.0, 465.0, fill="#F5F4FD",outline="")
+        canvas.create_rectangle(910.0,357.0,1076.0,465.0,fill="#F5F4FD",outline="")
+        canvas.create_rectangle( 540.0,357.0,706.0,465.0,fill="#F5F4FD",outline="")
+        canvas.create_rectangle(725.0,357.0,891.0,465.0,fill="#F5F4FD",outline="")
+        #label
+        canvas.create_text(400.0,370.0,anchor="nw",text="Overall",fill="#192159",
+                           font=("Raleway Bold", 18 * -1))
+        canvas.create_text(941.0,369.0,anchor="nw",text="Governance",fill="#192159",
+                           font=("Raleway Bold", 18 * -1))
+        canvas.create_text(568.0,369.0,anchor="nw",text="Environment",fill="#192159",
+                           font=("Raleway Bold", 18 * -1))
+        canvas.create_text(782.0,369.0,anchor="nw",text="Social",fill="#192159",
+                           font=("Raleway Bold", 18 * -1))
+        #values
+        def what_color(score):
+            if (score < 30):
+                return "#FF8080"
+            elif (score < 60):
+                return "#FFAD71"
+            else:
+                return "#90D27F"
+        
+        canvas.create_text(405.0, 393.0, anchor="nw",text=esg_score, fill=what_color(int(esg_score)),
+                           font=("Raleway SemiBold", 48 * -1))
+        canvas.create_text(595.0,393.0,anchor="nw",text=env_score,fill=what_color(int(env_score)),
+                           font=("Raleway SemiBold", 48 * -1))
+        canvas.create_text(780.0,393.0,anchor="nw",text=social_score,fill=what_color(int(social_score)),
+                           font=("Raleway SemiBold", 48 * -1))
+        canvas.create_text(965.0, 393.0,anchor="nw", text=gov_score, fill=what_color(int(gov_score)),
+                           font=("Raleway SemiBold", 48 * -1))
     #info color
     image_image_5 = PhotoImage(file=relative_to_assets("image_5.png"))
     image_5 = canvas.create_image(438.0,490.0,image=image_image_5)

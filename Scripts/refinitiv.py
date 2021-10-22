@@ -63,25 +63,14 @@ def RefinitivList(company_name):
     soup = BeautifulSoup(page.content, "html.parser")
     dictionary = json.loads(str(soup))
     result = []
-    result.append("Company Name: " + name_to_name(company_name))
-    result.append("Industry Type: " + str(dictionary['industryComparison']['industryType']))
-    result.append("ESG Score: " + str(dictionary['esgScore']['TR.TRESG']['score']))
-    result.append("Rank in Industry: " + str(dictionary['industryComparison']['rank']) + "/" + str(dictionary['industryComparison']['totalIndustries']))
-    result.append("-----------------------------------")
-    result.append("Environment Score: " + str(dictionary['esgScore']['TR.EnvironmentPillar']['score']))
-    result.append("Emission Score: " + str(dictionary['esgScore']['TR.TRESGEmissions']['score']))
-    result.append("Resource Use Score: " + str(dictionary['esgScore']['TR.TRESGResourceUse']['score']))
-    result.append("Innovation Score: " + str(dictionary['esgScore']['TR.TRESGInnovation']['score']))
-    result.append("-----------------------------------")
-    result.append("Social Score: " + str(dictionary['esgScore']['TR.SocialPillar']['score']))
-    result.append("Human Rights Score: " + str(dictionary['esgScore']['TR.TRESGHumanRights']['score']))
-    result.append("Product Responsibility Score: " + str(dictionary['esgScore']['TR.TRESGProductResponsibility']['score']))
-    result.append("Workforce Score: " + str(dictionary['esgScore']['TR.TRESGWorkforce']['score']))
-    result.append("Commmunity Score: " + str(dictionary['esgScore']['TR.TRESGCommunity']['score']))
-    result.append("-----------------------------------")
-    result.append("Governance Score: " + str(dictionary['esgScore']['TR.GovernancePillar']['score']))
-    result.append("Management Score: " + str(dictionary['esgScore']['TR.TRESGManagement']['score']))
-    result.append("Shareholders Score: " + str(dictionary['esgScore']['TR.TRESGShareholders']['score']))
-    result.append("CSR Strategy Score: " + str(dictionary['esgScore']['TR.TRESGCSRStrategy']['score']))
-    return result
+    try: 
+      result.append("Company Name: " + name_to_name(company_name))
+      result.append("ESG Score: " + str(dictionary['esgScore']['TR.TRESG']['score']))
+      result.append("Environment Score: " + str(dictionary['esgScore']['TR.EnvironmentPillar']['score']))
+      result.append("Social Score: " + str(dictionary['esgScore']['TR.SocialPillar']['score']))
+      result.append("Governance Score: " + str(dictionary['esgScore']['TR.GovernancePillar']['score']))
+      return result
+    except:
+      return 'NA'
+    
 
