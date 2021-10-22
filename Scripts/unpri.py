@@ -13,9 +13,9 @@ unpri = pd.read_excel("signatorydirectoryupdate05082021_681089.xlsx")
 # Function to detect UNPRI members
 def is_member(name):
   for x in unpri['Account Name']:
-    if fuzz.partial_ratio(x, name) >= 82:
-      return 'Yes'
-  return 'No'
+    if fuzz.partial_ratio(x, name) >= 90:
+      return True
+  return False
 
 # Output
 ## is_member(name)

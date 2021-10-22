@@ -49,7 +49,7 @@ def scrape(q):
     return links
 
 def filter_text(txt):
-  stop_words = ["@", "copyright", "cookies"]
+  stop_words = ["@", "copyright", "cookies","..","\xa0","min","Redirecting…","seconds…"]
   for x in stop_words:
     if x in txt.lower():
       return False
