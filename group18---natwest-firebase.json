@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "group18---natwest",
+  "private_key_id": "f0f0ebcfbfa9101a61897d34f17af5d993456830",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC/bOGbON/U/e2r\nEmYawTtV60V0gc29Nk2qkrOPVHGQ4qEMuR/EZ/teDzU2gKa3zGP7UOr7cd/TeP2L\nJID/H3h+XKB7XoegXAdwAip9fb4panhFhg4HFSxODyN2B8rhDnpFIhiHcaRR61bd\n6Pcs2wIcYOH0jdl/qJGW1Do22u+HTVfTFQ/dFtKjY9ghM+b5vucTKIE5Q6sk04ti\nfMLwy0XVHEXlUqj2sCz7gzBAf4y15YIxommrxsbl0dIFzNBU+rpaSiTFvvZQgbcR\nL4GnrtQwCn1qnctv70hMgHR2XoGXiEKssqB7mlq3zuPrVXiWsYPZPCUCZ2PGGeD6\nC5kOjPkFAgMBAAECggEAFBeKz4bG8Z1seIAAIQ9GmdRNsDaeoF1GhiCLQcBIgj9T\nTZlRtQT//IWmnW+f8Bs/JEYAP/+aEWF55USh2IVWWZcBzikkHagDLNXBXXYZA1JW\nSN/S8Zneklvi6jTTrc8d9MspHXBHYcTMk5Kr/PSI0m810DwiR9Sq4VSpvo+4w+/i\nr5qomK4uaN0GIXziV/4lo/5lLatBl+5lTCgeqjTxBelFk0OTd6aMwniFY/ZBVYoh\nx3tY1OKUH0nTJ9hKmJw522iL0JLyOTKMxdukowU15chzCpxlrXfb6IFz6blUOIqo\nqRmD2V6/5JD8jGpGyULaYG93/NAdregEZfsovNRwiQKBgQD7Rchb1p2rTOn66VFQ\nxfnDKeGR3wBaAKGEvnLK1of5+eH447u4HNoK0mCIOKA/9Tpg/ojefYvZfGTg4uAR\n+XGiKoc2pKIYqD4VP2e3fSYBGOguYVRX0MaAOuGIFY3TNr1nH/NwZJ1q6mqd0hdo\ndElLliFIsNAjjLPcpWTeEamlaQKBgQDDBtpi+YVilYglYTtJxjmVmeASmmXhg54o\ncxpXcCAspZkEJSc6ayyBhq1Dchc+PvjE5kf35g/xS+pJqGb0O0HYdVcpq6ryGide\nG7aYmPqUGjgm2/qIlrNZz918kLQG35eOmvKRCFlhhdkqSuUqOxOAZ279iswgOhRm\naeZHK/83PQKBgAD8QBHkIJAoaA581b3MWPNj+ad5yWWQ9RExMgALoVLgoPs54WWS\nb2R1eL1wA2jczFLPDLhao67Bpx+epCRN5x0sr4UOVjhkiIHK0txMWFbOwzJTXWJO\nxkiAcpv3AaxfXZTG8kxxiJB/xNVDmqXlNtheCVlgoCBTj+0AlQmt5g1pAoGBAJO1\nSQnVOfTkk+zbq2/AtjRcCp2MWsVmTg8MvlKjFXs7IJ1HFmLkcRzYx7lhW8FFKFzY\nnIFguYpjmNqYtQEdME2k8ZMZ9arPrClWjAEfPAmXohesXB+/I69OA84oOnFKPxs+\nt6Co1ilKmqOxfcdyXt7Nd/6HdPqjgnfelQ4qgG1xAoGAL+q639xYE/79mXmHLnHD\nIe89as1uw4o5bYr98af0RW9oea8bLKgAyHVazWQry0qrcTyvzjx2lgwkzKu9LHye\nJXWWWjHSy7V0DumuDIG4IHNP0QZQZaS4zeq0yQ3CuChWy6sVP+Nw9+BNzHYZdfJ+\nPCBZ3n0AiSRGGSSIOyDIETk=\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-r6242@group18---natwest.iam.gserviceaccount.com",
+  "client_id": "116974809709490554467",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-r6242%40group18---natwest.iam.gserviceaccount.com"
+}
