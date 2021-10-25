@@ -79,7 +79,7 @@ def get_summary(company):
         url.append(x)
 
     url.sort()
-    print(url)
+    #print(url)
     links = []
     text = []
     for x in url:

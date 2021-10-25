@@ -2,7 +2,15 @@ import tkinter as tk
 from datetime import datetime
 from PIL import Image, ImageTk
 from io import BytesIO
+from tkhtmlview import HTMLLabel
+from urllib.request import Request, urlopen
 import requests
+from flask import request
+from six.moves import urllib
+import urllib
+
+import ssl
+ssl._create_default_https_context = ssl._create_unverified_context
 
 import refinitiv
 import unpri
@@ -71,8 +79,46 @@ window.configure(bg = "#FFFFFF")
 ## FUNCTION
 def click():
 
-    canvas.create_rectangle(359.0,210.0, 1500.0, 350.0, fill="#FFFFFF",outline="")
+    canvas.create_rectangle(359.0,210.0, 1371.0, 350.0, fill="#FFFFFF",outline="")
 
+    #New Company Profile
+    canvas.create_text(
+        122.0,
+        175.0,
+        anchor="nw",
+        text=variable.get().upper(),
+        fill="#192159",
+        font=("Raleway SemiBold", 24 * -1)
+    )
+
+    canvas.create_rectangle( #Should be the logo
+        90.0,
+        220.0,
+        204.0,
+        334.0,
+        fill="#AE99C0",
+        outline=""
+    )
+
+    canvas.create_text(
+        97.0,
+        378.0,
+        anchor="nw",
+        text="Continent: Asia",
+        fill="#000000",
+        font=("Raleway Regular", 14 * -1)
+    )
+
+    canvas.create_text(
+        98.0,
+        354.0,
+        anchor="nw",
+        text="Country: Singapore",
+        fill="#000000",
+        font=("Raleway Regular", 14 * -1)
+    )
+
+    
     #COMPANY PROFILE
     #canvas.create_text(361.0,135.0,anchor="nw",text="Company: "+variable.get().upper(),
                        #fill="#7B85F7",font=("Raleway SemiBold", 24 * -1))
@@ -84,13 +130,16 @@ def click():
     #                                 outline="white")
     #canvas.tag_lower(box_comp,comp_name)
 
+    
+
+
     canvas.create_text(359.0,174.0,anchor="nw",text="Continent: Asia",
                        fill="#000000",font=("Raleway Regular", 14 * -1))
     canvas.create_text(483.0,174.0,anchor="nw",text="Country: Singapore",
                        fill="#000000",font=("Raleway Regular", 14 * -1))
 
      ## TEXT SUMMARY
-    canvas.create_rectangle(359.0,210.0, 1500.0, 350.0, fill="#FFFFFF",outline="")
+    canvas.create_rectangle(359.0,210.0, 1371.0, 350.0, fill="#FFFFFF",outline="")
     canvas.create_text(359.0, 210.0, anchor="nw",text="ESG Facts",fill="#192159",
                        font=("Raleway Bold", 18 * -1))
     sum_label = tk.Label(window, text=summary.get_summary(variable.get()), font=("Raleway Bold", 14 * -1),
@@ -283,7 +332,30 @@ def click():
     #logo_label.image = logo
     #logo_label.place(x=800, y=100)
 
-   
+    #req = Request('https://logos-download.com/wp-content/uploads/2016/12/OCBC_Bank_logo_logotype_Singapore-700x150.png',
+                  #headers={'User-Agent': 'Mozilla/5.0'})
+    #image_url = urlopen(req).read()
+    #image_url = "https://logos-download.com/wp-content/uploads/2016/12/OCBC_Bank_logo_logotype_Singapore-700x150.png"
+
+    #image_byt = request.urlopen(b'https://logos-download.com/wp-content/uploads/2016/12/OCBC_Bank_logo_logotype_Singapore-700x150.png'.decode('ASCII')).read()
+    #image_byt = urlopen((req.decode('ASCII'))).read()
+    #image_b64 = base64.encodestring(image_byt)
+    #photo = tk.PhotoImage(data=image_b64)
+
+    # create a white canvas
+    #cv = tk.Canvas(bg='white')
+    #cv.pack(side='top', fill='both', expand='yes')
+
+    # put the image on the canvas with
+    # create_image(xpos, ypos, image, anchor)
+    #cv.create_image(10, 10, image=photo, anchor='nw')
+##        cover='https://logos-download.com/wp-content/uploads/2016/12/OCBC_Bank_logo_logotype_Singapore-700x150.png'
+##
+##        raw_data = urllib.request.urlopen(cover).read()
+##        im = Image.open(io.BytesIO(raw_data))
+##        image = ImageTk.PhotoImage(im)
+##        label1 = Label(window, image=image)
+##        label1.grid(row=i, sticky=W)
 
 #HEADER
     
@@ -404,15 +476,7 @@ canvas.create_text(
 
 
 variable = tk.StringVar(window)
-#variable.set("ocbc") # default value
 
-entry_image_1 = PhotoImage(
-    file=relative_to_assets("entry_1.png"))
-entry_bg_1 = canvas.create_image(
-    152.865478515625,
-    125.09860229492188,
-    image=entry_image_1
-)
 entry_1 = Entry(
     bd=0,
     bg="#FFFFFF",
