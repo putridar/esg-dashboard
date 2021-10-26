@@ -18,11 +18,12 @@ from gensim.summarization import mz_keywords
 
 """
 Command to install:
-pip install gensim==3.8.1 --user
+pip install gensim==3.6.0 --user
 pip install bs4
 pip install requests_html
-pip install requests
-pip install nltk
+pip install requests==2.23.0 --user
+pip install nltk==3.2.5 --user
+pip install urllib3==1.25.11 --user
 """
 
 def get_source(url):
@@ -49,23 +50,30 @@ def scrape(q):
     return links
 
 def filter_text(txt):
-  stop_words = ["@", "copyright", "cookies"]
-  for x in stop_words:
-    if x in txt.lower():
-      return False
-  return True
+    stop_words = ["inbox","©",":","=","@","[","#", "copyright", "premium content", "cookies","..","\xa0","min","Redirecting…","seconds…"]
+    for x in stop_words:
+        if x in txt.lower():
+            return False
+    return True
 
 def remove_stopwords(sen):
     sen = sen.split(" ")
     sen_new = [i for i in sen if i not in stop_words]
     return sen_new
-
+def filter_link(link, company):
+    filters = ["watch","advertisement",".pdf","finance.yahoo","facebook","bloomberg"]
+    if company not in link.lower():
+        return True
+    for x in filters:
+        if x in link:
+            return True
+    return False
 def get_summary(company):
     results = scrape(company + " esg")
     dfs = []
     url = []
     for x in results:
-      if '.pdf' in x or "finance.yahoo" in x or "www."+company in x or company+".com" in x:
+      if filter_link(x, company):
         continue
       else:
         url.append(x)
