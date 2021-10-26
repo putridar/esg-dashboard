@@ -8,6 +8,11 @@ import requests
 from flask import request
 from six.moves import urllib
 import urllib
+from time import sleep
+
+import tkinter as tk
+from pandas import DataFrame
+import matplotlib.pyplot as plt
 
 import ssl
 ssl._create_default_https_context = ssl._create_unverified_context
@@ -19,6 +24,7 @@ import summary
 import icma
 import ungc
 import iigcc
+import topic_model
 
 ## FIREBASE
 import os
@@ -56,6 +62,7 @@ window.configure(bg = "#FFFFFF")
 ##################
 ## FUNCTIONS
 ##################
+
 
 def unavailable_refinitiv():
     canvas.create_rectangle(350.0,270.0, 1200.0, 380.0, fill="black",outline="")
@@ -114,8 +121,8 @@ def show_esg_rating(input_company) :
     
 
 def show_company_profile(input_company):
-    canvas.create_rectangle(90.0,220.0,204.0,800.0,
-                            fill="yellow",outline="")
+    canvas.create_rectangle(0.0,150.0,295.0,800.0,
+                            fill="#F4F4FC",outline="")
     canvas.create_text(122.0,175.0,anchor="nw",text=input_company.upper(),
                        fill="#192159",font=("Raleway SemiBold", 24 * -1))
     canvas.create_rectangle(90.0,220.0,204.0,334.0,
@@ -126,25 +133,25 @@ def show_company_profile(input_company):
                        fill="#000000",font=("Raleway Regular", 14 * -1))
 
 def show_summary(input_company):
-    canvas.create_rectangle(359.0,133.0, 1371.0, 300.0, fill="#FFFFFF",outline="")
+    canvas.create_rectangle(359.0,133.0, 1371.0, 300.0, fill="white",outline="")
     canvas.create_text(359.0, 133.0, anchor="nw",text="ESG Article Summarization",fill="#192159",
                        font=("Raleway Bold", 18 * -1))
-    sum_label = tk.Label(window, text=summary.get_summary(input_company), font=("Raleway Bold", 14 * -1),
+    sum_label = tk.Label(canvas, text=summary.get_summary(input_company), font=("Raleway Bold", 14 * -1),
                  wraplength=900, justify="left", fg="#000000")
     sum_label.place(x=355, y=153)
 
 def show_keywords(input_company):
-    canvas.create_text(359.0,440.0,anchor="nw",text="ESG Keywords",
+    canvas.create_text(359.0,440.0,anchor="nw",text="Sustainability Report Topic Modelling",
                        fill="#192159",font=("Raleway Bold", 18 * -1))
 
 def show_membership(input_company):
     canvas.create_rectangle(805.0,480.0,1227.0,602.0,
                             fill="#F4F4FC",outline="")
-    canvas.create_rectangle(846.0,480.0,846.0,786.0,
+    canvas.create_rectangle(846.0,480.0,846.0,710.0,
                             fill="#FFFFFF",outline="")
-    canvas.create_rectangle(1096.0,480.0,1096.0,786.0,
+    canvas.create_rectangle(1096.0,480.0,1096.0,710.0,
                             fill="#FFFFFF",outline="")
-    canvas.create_rectangle(805.0,480.0,1227.0,770.0,
+    canvas.create_rectangle(805.0,480.0,1227.0,710.0,
                             fill="#F5F4FD",outline="")
     canvas.create_text(805.0,440.0,anchor="nw",text="Membership Table",
                        fill="#192159",font=("Raleway Bold", 18 * -1))
@@ -257,27 +264,79 @@ def get_ungc(input_company):
         logo_label = tk.Label(image=logo, bg="#F5F4FD")
         logo_label.image = logo
         logo_label.place(x=1100, y=630)
+
+def show_topic_model(input_company):
+    canvas.create_rectangle(359.0,480.0,760.0,710.0,fill="#F4F4FC",outline="")
+    topic_dist = topic_model.get_topic_model(input_company)
+    canvas.create_text(532.0, 714.0,anchor="nw",text="Topics",
+                       fill="#000000",font=("Raleway Bold", 14 * -1))
+    canvas.create_text(332.0,620.0,anchor="nw",text="Proportion",
+                       fill="#000000",font=("Raleway Bold", 14 * -1), angle=90)
+    data = list(map(lambda x:x[1],topic_dist))
+
+    canvas.create_rectangle(388.0,700.0,740.0,702.0,fill="black",outline="") #Horizontal
     
-        
+    canvas.create_rectangle(388.0,500.0,390.0,700.0,fill="black",outline="") #Vertical
+    
+##    label = list(map(lambda x:"Topic " + str(x[0]),topic_dist))
+
+    canvas.pack()
+
+    c_width = 600
+    c_height = 600
+
+    # the variables below size the bar graph
+    # experiment with them to fit your needs
+    # highest y = max_data_value * y_stretch
+    y_stretch = 200
+    
+    # gap between lower canvas edge and x axis
+    y_gap = 30
+    
+    # stretch enough to get all data items in
+    x_stretch = 50
+    x_width = 60
+    
+    # gap between left canvas edge and y axis
+    x_gap = 30
+
+    # x place
+    x_place = 370
+    y_place = 130
+
+    for x, y in enumerate(data):
+        # calculate reactangle coordinates (integers) for each bar
+        x0 = x_place+ x * x_stretch + x * x_width + x_gap
+        y0 = y_place + c_height - (y * y_stretch + y_gap)
+        x1 = x_place + x * x_stretch + x * x_width + x_width + x_gap
+        y1 = y_place + c_height - y_gap
+        # draw the bar
+        canvas.create_rectangle(x0, y0, x1, y1, fill="#401564")
+        # put the y value above each bar
+        canvas.create_text(x0+2, y0, anchor=tk.SW, text=str(y))
+
+    
 def click():
-   
     show_company_profile(variable.get()) # Company Profile
     show_summary(variable.get()) # Summary    
     show_keywords(variable.get()) #Keywords
     show_membership(variable.get()) #Membership
     show_esg_rating(variable.get()) #Ratings
+    show_topic_model(variable.get())
 
     image_image_10 = PhotoImage(file=relative_to_assets("image_10.png"))
     image_10 = canvas.create_image(515.0,675.0,image=image_image_10)
     
 
 #Header Left 
-    
 canvas = Canvas(window,bg = "#FFFFFF",height = 814,width = 1371,
                 bd = 0,highlightthickness = 0,relief = "ridge")
-
 canvas.place(x = 0, y = 0)
 canvas.create_rectangle(0.0,0.0,295.0,900.0,fill="#F4F4FC",outline="")
+
+sum_label = tk.Label(canvas, text="", font=("Raleway Bold", 14 * -1),
+                     fg="#000000")
+sum_label.place(x=355, y=153)
 
 #info Color
 image_image_5 = PhotoImage(file=relative_to_assets("image_5.png"))
