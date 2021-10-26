@@ -2,356 +2,671 @@ import tkinter as tk
 from datetime import datetime
 from PIL import Image, ImageTk
 from io import BytesIO
+from tkhtmlview import HTMLLabel
+from urllib.request import Request, urlopen
 import requests
+from flask import request
+from six.moves import urllib
+import urllib
 
-import weather2
-import piholeget
-import hddspace
-import steam
-import news
-import xplane
+import ssl
+ssl._create_default_https_context = ssl._create_unverified_context
+
 import refinitiv
+import unpri
+import unep_fi
+import summary
+import icma
+import ungc
+import iigcc
 
-print(datetime.now().strftime('%A, %d %B %Y\n'))
-print("LOADING, PLEASE WAIT...\n")
+## FIREBASE
+import os
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.path.realpath("group18---natwest-firebase.json")
 
-# CREATE WINDOW - RESIZE FALSE - SIZE - TITLE CARD
-root = tk.Tk()
-root.resizable(False, False)
-root.geometry('1305x780')
-root.title("ESG Dashboard")
-root.configure(bg='#c7d5e0')
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
 
-# DRAW TOP BLUE BAR - DRAW TITLE - DRAW DATETIME
-top_bg = tk.Canvas(root, width=1305, height=60, bg='#1b2838', highlightthickness=0).place(x=0, y=0)
-tk.Label(top_bg, text='Dashboard', font='Montserrat 25', bg='#1b2838', fg='white').place(x=15, y=3)
-tk.Label(top_bg, text=datetime.now().strftime('%A, %d %B %Y'), font='Montserrat 20', bg='#1b2838', fg='white').place(
-    x=930, y=8)
+cred = credentials.Certificate("group18---natwest-firebase.json")
+firebase_admin.initialize_app(cred)
 
-# BBC NEWS
-##news_box = tk.Canvas(root, width=350, height=140, bg='#2a475e', highlightthickness=0).place(x=20, y=620)
-##news_box_top = tk.Canvas(root, width=350, height=20, bg='#1b2838', highlightthickness=0).place(x=20, y=600)
-##tk.Label(news_box_top, text='BBC News', font='Montserrat 7 bold', bg='#1b2838',
-##         fg='#FFFFFF').place(x=25, y=600)
+db = firestore.client()
+
+from pathlib import Path
+
+# from tkinter import *
+# Explicit imports to satisfy Flake8
+from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
+
+
+OUTPUT_PATH = Path(__file__).parent
+ASSETS_PATH = OUTPUT_PATH / Path("./assets")
+
+
+def relative_to_assets(path: str) -> Path:
+    return ASSETS_PATH / Path(path)
+
+#get document id for green bond
+doc_ref = list(db.collection("asian bank").get())
+#document id
+ids = []
+for x in doc_ref:
+  ids.append(x.id)
+
+## DATA FROM FIREBASE
+#green_bond = {}
+#unpri_data = {}
+## summary = {}
+
+#for x in ids:
+  #doc = db.collection("asian bank").document(x).get()
+  #if doc.exists:
+  #curr = doc.to_dict()
+    #if "green bond" in curr:
+    #  green_bond[x] = curr['green bond']
+    #if "unpri" in curr:
+     # unpri_data[x] = curr['unpri']
+    #if "summary" in curr:
+      #summary[x] = curr['summary']
+      
+window = Tk()
+
+window.title("ESG Dashboard")
+window.geometry("1371x814")
+window.configure(bg = "#FFFFFF")
+
+## FUNCTION
+def click():
+
+    canvas.create_rectangle(359.0,210.0, 1371.0, 350.0, fill="#FFFFFF",outline="")
+
+    #New Company Profile
+    canvas.create_text(
+        122.0,
+        175.0,
+        anchor="nw",
+        text=variable.get().upper(),
+        fill="#192159",
+        font=("Raleway SemiBold", 24 * -1)
+    )
+
+    canvas.create_rectangle( #Should be the logo
+        90.0,
+        220.0,
+        204.0,
+        334.0,
+        fill="#AE99C0",
+        outline=""
+    )
+
+    canvas.create_text(
+        97.0,
+        378.0,
+        anchor="nw",
+        text="Continent: Asia",
+        fill="#000000",
+        font=("Raleway Regular", 14 * -1)
+    )
+
+    canvas.create_text(
+        98.0,
+        354.0,
+        anchor="nw",
+        text="Country: Singapore",
+        fill="#000000",
+        font=("Raleway Regular", 14 * -1)
+    )
+
+    
+    #COMPANY PROFILE
+    #canvas.create_text(361.0,135.0,anchor="nw",text="Company: "+variable.get().upper(),
+                       #fill="#7B85F7",font=("Raleway SemiBold", 24 * -1))
+    canvas.create_rectangle(361.0,135.0, 900.0, 200.0, fill="#FFFFFF",outline="")
+    comp_name = canvas.create_text(361.0,135.0,anchor="nw",
+                                   text="Company: "+variable.get().upper(),
+                                   fill="#7B85F7",font=("Raleway SemiBold", 24 * -1))
+    #box_comp=canvas.create_rectangle(canvas.bbox(comp_name),fill="white",
+    #                                 outline="white")
+    #canvas.tag_lower(box_comp,comp_name)
+
+    
+
+
+    canvas.create_text(359.0,174.0,anchor="nw",text="Continent: Asia",
+                       fill="#000000",font=("Raleway Regular", 14 * -1))
+    canvas.create_text(483.0,174.0,anchor="nw",text="Country: Singapore",
+                       fill="#000000",font=("Raleway Regular", 14 * -1))
+
+     ## TEXT SUMMARY
+    canvas.create_rectangle(359.0,210.0, 1371.0, 350.0, fill="#FFFFFF",outline="")
+    canvas.create_text(359.0, 210.0, anchor="nw",text="ESG Facts",fill="#192159",
+                       font=("Raleway Bold", 18 * -1))
+    sum_label = tk.Label(window, text=summary.get_summary(variable.get()), font=("Raleway Bold", 14 * -1),
+                 wraplength=900, justify="left", fg="#BCBCBC")
+    sum_label.place(x=355, y=230)
+    #canvas.create_text(359.0, 243.0,anchor="nw",
+    #                   text= summary_text,
+     #                  fill="#BCBCBC",
+     #                  font=("Raleway Bold", 14 * -1))
+
+    #ESG RATING
+
+    esg_rating = refinitiv.RefinitivList(variable.get())
+    
+    if (esg_rating == 'NA'):
+        #boxes
+        canvas.create_rectangle(350.0,357.0, 516.0, 465.0, fill="#F5F4FD",outline="")
+        canvas.create_rectangle(910.0,357.0,1076.0,465.0,fill="#F5F4FD",outline="")
+        canvas.create_rectangle( 540.0,357.0,706.0,465.0,fill="#F5F4FD",outline="")
+        canvas.create_rectangle(725.0,357.0,891.0,465.0,fill="#F5F4FD",outline="")
+        #label
+        canvas.create_text(400.0,370.0,anchor="nw",text="Overall",fill="#192159",
+                           font=("Raleway Bold", 18 * -1))
+        canvas.create_text(941.0,369.0,anchor="nw",text="Governance",fill="#192159",
+                           font=("Raleway Bold", 18 * -1))
+        canvas.create_text(568.0,369.0,anchor="nw",text="Environment",fill="#192159",
+                           font=("Raleway Bold", 18 * -1))
+        canvas.create_text(782.0,369.0,anchor="nw",text="Social",fill="#192159",
+                           font=("Raleway Bold", 18 * -1))
+        
+        canvas.create_text(405.0, 393.0, anchor="nw",text='NA', fill="#192159",
+                           font=("Raleway SemiBold", 48 * -1))
+        canvas.create_text(595.0,393.0,anchor="nw",text='NA',fill="#192159",
+                           font=("Raleway SemiBold", 48 * -1))
+        canvas.create_text(780.0,393.0,anchor="nw",text='NA',fill="#192159",
+                           font=("Raleway SemiBold", 48 * -1))
+        canvas.create_text(965.0, 393.0,anchor="nw", text='NA', fill="#192159",
+                           font=("Raleway SemiBold", 48 * -1))
+    else:
+        esg_score = esg_rating[1][-2:]
+        env_score = esg_rating[2][-2:]
+        social_score = esg_rating[3][-2:]
+        gov_score = esg_rating[4][-2:]
+
+        #boxes
+        canvas.create_rectangle(350.0,357.0, 516.0, 465.0, fill="#F5F4FD",outline="")
+        canvas.create_rectangle(910.0,357.0,1076.0,465.0,fill="#F5F4FD",outline="")
+        canvas.create_rectangle( 540.0,357.0,706.0,465.0,fill="#F5F4FD",outline="")
+        canvas.create_rectangle(725.0,357.0,891.0,465.0,fill="#F5F4FD",outline="")
+        #label
+        canvas.create_text(400.0,370.0,anchor="nw",text="Overall",fill="#192159",
+                           font=("Raleway Bold", 18 * -1))
+        canvas.create_text(941.0,369.0,anchor="nw",text="Governance",fill="#192159",
+                           font=("Raleway Bold", 18 * -1))
+        canvas.create_text(568.0,369.0,anchor="nw",text="Environment",fill="#192159",
+                           font=("Raleway Bold", 18 * -1))
+        canvas.create_text(782.0,369.0,anchor="nw",text="Social",fill="#192159",
+                           font=("Raleway Bold", 18 * -1))
+        #values
+        def what_color(score):
+            if (score < 30):
+                return "#FF8080"
+            elif (score < 60):
+                return "#FFAD71"
+            else:
+                return "#90D27F"
+        
+        canvas.create_text(405.0, 393.0, anchor="nw",text=esg_score, fill=what_color(int(esg_score)),
+                           font=("Raleway SemiBold", 48 * -1))
+        canvas.create_text(595.0,393.0,anchor="nw",text=env_score,fill=what_color(int(env_score)),
+                           font=("Raleway SemiBold", 48 * -1))
+        canvas.create_text(780.0,393.0,anchor="nw",text=social_score,fill=what_color(int(social_score)),
+                           font=("Raleway SemiBold", 48 * -1))
+        canvas.create_text(965.0, 393.0,anchor="nw", text=gov_score, fill=what_color(int(gov_score)),
+                           font=("Raleway SemiBold", 48 * -1))
+    #info color
+    image_image_5 = PhotoImage(file=relative_to_assets("image_5.png"))
+    image_5 = canvas.create_image(438.0,490.0,image=image_image_5)
+
+    image_image_6 = PhotoImage(file=relative_to_assets("image_6.png"))
+    image_6 = canvas.create_image(631.0,490.0,image=image_image_6)
+
+    image_image_7 = PhotoImage(file=relative_to_assets("image_7.png"))
+    image_7 = canvas.create_image(818.0,490.0,image=image_image_7)
+
+    ## UNPRI
+
+    canvas.create_text(822.0,617.0,anchor="nw",text="1",fill="#000000",
+                       font=("Raleway Regular", 14 * -1))
+    canvas.create_text(867.0,619.0,anchor="nw",text="UNPRI",fill="#000000", font=("Raleway Regular", 12 * -1))
+
+    if (unpri.is_member(variable.get()) is True):
+        logo = Image.open("image_8.png")
+        logo = ImageTk.PhotoImage(logo)
+        logo_label = tk.Label(image=logo, bg="#F5F4FD")
+        logo_label.image = logo
+        logo_label.place(x=1100, y=610)
+    else:
+        logo = Image.open("image_9.png")
+        logo = ImageTk.PhotoImage(logo)
+        logo_label = tk.Label(image=logo, bg="#F5F4FD")
+        logo_label.image = logo
+        logo_label.place(x=1100, y=610)
+
+    ## UNEP FI
+    canvas.create_text(822.0,645.0,anchor="nw",text="2",fill="#000000",
+                       font=("Raleway Regular", 14 * -1))
+
+    canvas.create_text(867.0,648.0,anchor="nw",text="UNEP FI",fill="#000000",
+                       font=("Raleway Regular", 12 * -1))
+
+    if (unep_fi.is_member_unepfi(variable.get()) is True):
+        logo = Image.open("image_8.png")
+        logo = ImageTk.PhotoImage(logo)
+        logo_label = tk.Label(image=logo, bg="#F5F4FD")
+        logo_label.image = logo
+        logo_label.place(x=1100, y=640)
+    else:
+        logo = Image.open("image_9.png")
+        logo = ImageTk.PhotoImage(logo)
+        logo_label = tk.Label(image=logo, bg="#F5F4FD")
+        logo_label.image = logo
+        logo_label.place(x=1100, y=640)
+
+    ## ICMA
+    canvas.create_text(822.0,678.0,anchor="nw",text="3",fill="#000000",
+                       font=("Raleway Regular", 14 * -1))
+
+    canvas.create_text(867.0,680.0,anchor="nw",text="ICMA",fill="#000000",
+                       font=("Raleway Regular", 12 * -1))
+
+    if (icma.is_member_icma(variable.get()) is True):
+        logo = Image.open("image_8.png")
+        logo = ImageTk.PhotoImage(logo)
+        logo_label = tk.Label(image=logo, bg="#F5F4FD")
+        logo_label.image = logo
+        logo_label.place(x=1100, y=670)
+    else:
+        logo = Image.open("image_9.png")
+        logo = ImageTk.PhotoImage(logo)
+        logo_label = tk.Label(image=logo, bg="#F5F4FD")
+        logo_label.image = logo
+        logo_label.place(x=1100, y=670)
+
+    ## IIGCC
+    canvas.create_text(822.0,707.0,anchor="nw",text="4",fill="#000000",
+                       font=("Raleway Regular", 14 * -1))
+
+    canvas.create_text(867.0,709.0,anchor="nw",text="IIGCC",fill="#000000",
+                       font=("Raleway Regular", 12 * -1))
+
+    if (iigcc.is_member_iigcc(variable.get()) is True):
+        logo = Image.open("image_8.png")
+        logo = ImageTk.PhotoImage(logo)
+        logo_label = tk.Label(image=logo, bg="#F5F4FD")
+        logo_label.image = logo
+        logo_label.place(x=1100, y=700)
+    else:
+        logo = Image.open("image_9.png")
+        logo = ImageTk.PhotoImage(logo)
+        logo_label = tk.Label(image=logo, bg="#F5F4FD")
+        logo_label.image = logo
+        logo_label.place(x=1100, y=700)
+
+    ## UNGC
+    canvas.create_text(822.0,738.0,anchor="nw",text="5",fill="#000000",
+                       font=("Raleway Regular", 14 * -1))
+
+    canvas.create_text(867.0,740.0,anchor="nw",text="UNGC",fill="#000000",
+                       font=("Raleway Regular", 12 * -1))
+
+    if (ungc.is_member_ungc(variable.get()) is True):
+        logo = Image.open("image_8.png")
+        logo = ImageTk.PhotoImage(logo)
+        logo_label = tk.Label(image=logo, bg="#F5F4FD")
+        logo_label.image = logo
+        logo_label.place(x=1100, y=730)
+    else:
+        logo = Image.open("image_9.png")
+        logo = ImageTk.PhotoImage(logo)
+        logo_label = tk.Label(image=logo, bg="#F5F4FD")
+        logo_label.image = logo
+        logo_label.place(x=1100, y=730)
+    ## COMPANY LOGO
+
+    #logo = Image.open('ocbc-pic.png')
+    #logo = logo.resize((int(logo.size[0]/3),int(logo.size[1]/3)))
+    #logo = ImageTk.PhotoImage(logo)
+    #logo_label = tk.Label(image=logo, bg = "white")
+    #logo_label.image = logo
+    #logo_label.place(x=800, y=100)
+
+    #req = Request('https://logos-download.com/wp-content/uploads/2016/12/OCBC_Bank_logo_logotype_Singapore-700x150.png',
+                  #headers={'User-Agent': 'Mozilla/5.0'})
+    #image_url = urlopen(req).read()
+    #image_url = "https://logos-download.com/wp-content/uploads/2016/12/OCBC_Bank_logo_logotype_Singapore-700x150.png"
+
+    #image_byt = request.urlopen(b'https://logos-download.com/wp-content/uploads/2016/12/OCBC_Bank_logo_logotype_Singapore-700x150.png'.decode('ASCII')).read()
+    #image_byt = urlopen((req.decode('ASCII'))).read()
+    #image_b64 = base64.encodestring(image_byt)
+    #photo = tk.PhotoImage(data=image_b64)
+
+    # create a white canvas
+    #cv = tk.Canvas(bg='white')
+    #cv.pack(side='top', fill='both', expand='yes')
+
+    # put the image on the canvas with
+    # create_image(xpos, ypos, image, anchor)
+    #cv.create_image(10, 10, image=photo, anchor='nw')
+##        cover='https://logos-download.com/wp-content/uploads/2016/12/OCBC_Bank_logo_logotype_Singapore-700x150.png'
 ##
-##news_data = news.GetNews()
+##        raw_data = urllib.request.urlopen(cover).read()
+##        im = Image.open(io.BytesIO(raw_data))
+##        image = ImageTk.PhotoImage(im)
+##        label1 = Label(window, image=image)
+##        label1.grid(row=i, sticky=W)
+
+#HEADER
+    
+canvas = Canvas(
+    window,
+    bg = "#FFFFFF",
+    height = 814,
+    width = 1371,
+    bd = 0,
+    highlightthickness = 0,
+    relief = "ridge"
+)
+
+
+canvas.create_text(
+    359.0,
+    91.0,
+    anchor="nw",
+    text="Performance based on ratings,  ESG Keywords, and Ratings",
+    fill="#000000",
+    font=("Raleway Regular", 14 * -1)
+)
+
+canvas.place(x = 0, y = 0)
+canvas.create_rectangle(
+    805.0,
+    572.0,
+    1227.0,
+    770.0,
+    fill="#F5F4FD",
+    outline="")
+
+canvas.create_rectangle(
+    0.0,
+    0.0,
+    295.0,
+    900.0,
+    fill="#F4F4FC",
+    outline="")
+
+canvas.create_text(
+    359.0,
+    45.0,
+    anchor="nw",
+    text="Companies’ ESG Performance",
+    fill="#192159",
+    font=("Raleway Bold", 36 * -1)
+)
+
+##canvas.create_text(
+##    24.0,
+##    160.0,
+##    anchor="nw",
+##    text="List of Companies",
+##    fill="#192159",
+##    font=("Raleway Bold", 14 * -1)
+##)
+
+canvas.create_text(
+    361.0,
+    135.0,
+    anchor="nw",
+    text="Company: ",
+    fill="#7B85F7",
+    font=("Raleway SemiBold", 24 * -1)
+)
+
+
+canvas.create_text(
+    102.0,
+    42.0,
+    anchor="nw",
+    text="NatWest Markets",
+    fill="#192159",
+    font=("Raleway Bold", 18 * -1)
+)
+
+canvas.create_text(
+    359.0,
+    528.0,
+    anchor="nw",
+    text="ESG Keywords",
+    fill="#192159",
+    font=("Raleway Bold", 18 * -1)
+)
+
+canvas.create_text(
+    805.0,
+    528.0,
+    anchor="nw",
+    text="Membership Table",
+    fill="#192159",
+    font=("Raleway Bold", 18 * -1)
+)
+
+
+
+canvas.create_text(
+    359.0,
+    174.0,
+    anchor="nw",
+    text="Continent: ",
+    fill="#000000",
+    font=("Raleway Regular", 14 * -1)
+)
+
+canvas.create_text(
+    483.0,
+    174.0,
+    anchor="nw",
+    text="Country: ",
+    fill="#000000",
+    font=("Raleway Regular", 14 * -1)
+)
+
+
+
+
+
+variable = tk.StringVar(window)
+
+entry_1 = Entry(
+    bd=0,
+    bg="#FFFFFF",
+    textvariable=variable,
+    highlightthickness=0
+)
+entry_1.place(
+    x=24.0,
+    y=106.0,
+    width=257.73095703125,
+    height=36.19720458984375
+)
+
+button_image_1 = PhotoImage(
+    file=relative_to_assets("button_1.png"))
+button_1 = Button(
+    image=button_image_1,
+    borderwidth=0,
+    highlightthickness=0,
+    command=click,
+    relief="flat"
+)
+button_1.place(
+    x=245.0,
+    y=112.0,
+    width=28.0,
+    height=28.0
+)
+
+image_image_1 = PhotoImage(
+    file=relative_to_assets("image_1.png"))
+image_1 = canvas.create_image(
+    51.0,
+    52.0,
+    image=image_image_1
+)
+
+##canvas.create_rectangle(
+##    0.0,
+##    185.0,
+##    295.0,
+##    242.0,
+##    fill="#D9D7EF",
+##    outline="")
 ##
-##headline = []
-##news_y = 620
-##for i in range(0, 7):
-##    if len(news_data[i]) > 50:
-##        headline.append(news_data[i][:50] + '...')
-##    else:
-##        headline.append(news_data[i])
-##    tk.Label(news_box, text='- ' + headline[i], font='Montserrat 9', bg='#2a475e', fg='#FFFFFF').place(x=25, y=news_y)
-##    news_y += 19
-
-# THRESHOLD NEWS
-##threshold_box = tk.Canvas(root, width=285, height=520, bg='#2a475e', highlightthickness=0).place(x=1000, y=240)
-##threshold_box_top = tk.Canvas(root, width=285, height=20, bg='#1b2838', highlightthickness=0).place(x=1000, y=220)
-##tk.Label(threshold_box_top, text='Threshold News', font='Montserrat 7 bold', bg='#1b2838',
-##         fg='#FFFFFF').place(x=1005, y=220)
+##canvas.create_text(
+##    76.0,
+##    205.0,
+##    anchor="nw",
+##    text="DBS",
+##    fill="#401564",
+##    font=("Raleway Bold", 14 * -1)
+##)
 ##
-##threshold_headlines = xplane.getheadlines()
-
+##image_image_2 = PhotoImage(
+##    file=relative_to_assets("image_2.png"))
+##image_2 = canvas.create_image(
+##    44.0,
+##    213.0,
+##    image=image_image_2
+##)
 ##
-##def getimage_threshold(imgurl):
-##    response_img = requests.get(imgurl)
-##    img_data = response_img.content
-##    img_resize = Image.open(BytesIO(img_data)).resize((245, 120), Image.ANTIALIAS)
-##    img = ImageTk.PhotoImage(img_resize)
-##    return img
+##canvas.create_text(
+##    76.0,
+##    261.0,
+##    anchor="nw",
+##    text="OCBC",
+##    fill="#000000",
+##    font=("Raleway Regular", 14 * -1)
+##)
 ##
+##image_image_3 = PhotoImage(
+##    file=relative_to_assets("image_3.png"))
+##image_3 = canvas.create_image(
+##    44.0,
+##    269.0,
+##    image=image_image_3
+##)
 ##
-##th_y = 255
-##thresholdpics_list = []
-##for i in range(3):
-##    thresholdpics_list.append(getimage_threshold(threshold_headlines[i].url))
-##    tk.Label(root, image=thresholdpics_list[i], width=245, height=120, bd=0).place(x=1020, y=th_y)
-##    tk.Label(threshold_box, text=threshold_headlines[i].date, font='Montserrat 8', bg='#1b2838',
-##             fg='#FFFFFF').place(x=1020, y=th_y)
-##    tk.Label(threshold_box, text=threshold_headlines[i].headline, font='Montserrat 9', bg='#2a475e', fg='#FFFFFF',
-##             wraplength=245, justify='center').place(x=1020, y=th_y + 120)
-##    th_y += 170
-
-# STEAM TOP SELLING
-##steam_box = tk.Canvas(root, width=590, height=520, bg='#2a475e', highlightthickness=0).place(x=390, y=240)
-##steam_box_top = tk.Canvas(root, width=590, height=20, bg='#1b2838', highlightthickness=0).place(x=390, y=220)
-##steam_box_price = tk.Canvas(steam_box, width=80, height=520, bg='#171a21', highlightthickness=0).place(x=900, y=240)
-##tk.Label(steam_box_top, text='Steam Top Selling', font='Montserrat 7 bold', bg='#1b2838',
-##         fg='#FFFFFF').place(x=395, y=220)
+##canvas.create_text(
+##    76.0,
+##    317.0,
+##    anchor="nw",
+##    text="UOB",
+##    fill="#000000",
+##    font=("Raleway Regular", 14 * -1)
+##)
 ##
-##steam_games = steam.GetGames()
-##
-##
-##def getimage_steam(imgurl):
-##    url = 'https://steamcdn-a.akamaihd.net/steam/apps/' + imgurl + '/capsule_184x69.jpg'
-##    response_img = requests.get(url)
-##    img_data = response_img.content
-##    img_resize = Image.open(BytesIO(img_data)).resize((107, 40), Image.ANTIALIAS)
-##    img = ImageTk.PhotoImage(img_resize)
-##    return img
-##
-##
-##img_y = 240
-##photo_list = []
-##for i in range(0, 13):
-##    photo_list.append(getimage_steam(steam_games[i].imgurl))
-##    tk.Label(root, image=photo_list[i], width=107, height=40, bd=0).place(x=390, y=img_y)
-##    img_y += 40
-##
-##steam_y = 245
-##for i in range(0, 13):
-##    tk.Label(steam_box, text=steam_games[i].title, font='Montserrat 12', bg='#2a475e',
-##             fg='#FFFFFF').place(x=500, y=steam_y)
-##    tk.Label(steam_box, text=steam_games[i].price, font='Montserrat 12', bg='#171a21',
-##             fg='#FFFFFF').place(x=910, y=steam_y)
-##    steam_y += 40
+##image_image_4 = PhotoImage(
+##    file=relative_to_assets("image_4.png"))
+##image_4 = canvas.create_image(
+##    44.0,
+##    325.0,
+##    image=image_image_4
+##)
 
-value = 80
-rating_x = 25
-steam_box = tk.Canvas(root, width=590, height=520, bg='#2a475e', highlightthickness=0).place(x=rating_x, y=value)
-steam_box_top = tk.Canvas(root, width=590, height=20, bg='#1b2838', highlightthickness=0).place(x=rating_x, y=value-20)
-steam_box_price = tk.Canvas(steam_box, width=80, height=520, bg='#171a21', highlightthickness=0).place(x=rating_x, y=value)
-tk.Label(steam_box_top, text='ESG Rating', font='Montserrat 7 bold', bg='#1b2838',
-         fg='#FFFFFF').place(x=395, y=value-20)
-
-company_name = input("Enter the company name you want to search for: " )
-steam_games = refinitiv.RefinitivList(company_name)
-
-##from tkinter import *  # from tkinter import *
-##
-##lst = steam_games
-##
-##t = Text(root)
-##for x in lst:
-##    t.insert(END, x + '\n')
-##t.pack()
-##root.mainloop()
-
-def getimage_steam(imgurl):
-    url = 'https://steamcdn-a.akamaihd.net/steam/apps/' + imgurl + '/capsule_184x69.jpg'
-    response_img = requests.get(url)
-    img_data = response_img.content
-    img_resize = Image.open(BytesIO(img_data)).resize((107, 40), Image.ANTIALIAS)
-    img = ImageTk.PhotoImage(img_resize)
-    return img
-
-## this is for the picture i think
-##img_y = 240
-##photo_list = []
-##for i in range(0, 13):
-##    photo_list.append(getimage_steam(steam_games[i].imgurl))
-##    tk.Label(root, image=photo_list[i], width=107, height=40, bd=0).place(x=390, y=img_y)
-##    img_y += 40
-
-steam_y = 80
-for i in range(0, len(steam_games)):
-    tk.Label(steam_box, text=steam_games[i], font='Montserrat 12', bg='#2a475e',
-             fg='#FFFFFF').place(x=rating_x+20, y=steam_y)
-##    tk.Label(steam_box, text=steam_games[i].price, font='Montserrat 12', bg='#171a21',
-##             fg='#FFFFFF').place(x=910, y=steam_y)
-    steam_y += 20
-
-# WEATHER ---------------------------------
-weather_data = weather2.get()
-
-weather_box = tk.Canvas(root, width=1265, height=100, bg='#2a475e', highlightthickness=0).place(x=20, y=100)
-weather_box_top = tk.Canvas(root, width=1265, height=20, bg='#1b2838', highlightthickness=0).place(x=20, y=80)
-tk.Label(weather_box_top, text='Weather Forcast, York UK', font='Montserrat 7 bold', bg='#1b2838',
-         fg='#FFFFFF').place(x=25, y=80)
+canvas.create_text(
+    361.0,
+    324.0,
+    anchor="nw",
+    text="ESG Rating",
+    fill="#192159",
+    font=("Raleway Bold", 18 * -1)
+)
 
 
-def geticon_weather(iconcode):
-    url = 'http://openweathermap.org/img/wn/' + iconcode + '@2x.png'
-    response_img = requests.get(url)
-    img_data = response_img.content
-    img_resize = Image.open(BytesIO(img_data)).resize((80, 80), Image.ANTIALIAS)
-    img = ImageTk.PhotoImage(img_resize)
-    return img
 
 
-day_x = 165
-icon_x = 150
-icon_list = []
-for i in range(0, 8):
-    icon_list.append(geticon_weather(weather_data[0][i].icon))
-    tk.Label(root, image=icon_list[i], width=80, height=80, bd=0, bg='#2a475e').place(x=icon_x, y=100)
-    tk.Label(root, text=weather_data[0][i].day + ' - ' + str(weather_data[0][i].temp) + '°', bg='#2a475e', fg='#FFFFFF',
-             font='Montserrat 8').place(x=day_x, y=170)
-    icon_x += 120
-    day_x += 120
-
-tk.Label(weather_box, text=str(weather_data[0][0].temp) + '°', font='Montserrat 40', bg='#2a475e',
-         fg='#FFFFFF').place(x=50, y=107)
-
-tk.Label(weather_box, text='Sunrise: ' + weather_data[1], font='Montserrat 12', bg='#2a475e',
-         fg='#FFFFFF').place(x=1100, y=120)
-tk.Label(weather_box, text='Sunset: ' + weather_data[2], font='Montserrat 12', bg='#2a475e',
-         fg='#FFFFFF').place(x=1105, y=150)
-
-# PI HOLE -------------------------------------
-pihole_data = piholeget.GetData()
-
-pihole_box = tk.Canvas(root, width=350, height=140, bg='#2a475e', highlightthickness=0).place(x=20, y=240)
-pihole_box_top = tk.Canvas(root, width=350, height=20, bg='#1b2838', highlightthickness=0).place(x=20, y=220)
-pihole_box_temp = tk.Canvas(pihole_box, width=350, height=30, bg='#2a475e', highlightthickness=0).place(x=20, y=240)
-pihole_box_middle = tk.Canvas(pihole_box, width=350, height=20, bg='#171a21', highlightthickness=0).place(x=20, y=270)
-tk.Label(pihole_box_top, text='Raspberry Pi Status', font='Montserrat 7 bold', bg='#1b2838', fg='#FFFFFF') \
-    .place(x=25, y=220)
-
-if str(pihole_data[0]) == 'enabled':
-    pihole_enabled_colour = '#1c7c4c'
-else:
-    pihole_enabled_colour = '#E74C3C'
-
-tk.Label(pihole_box_temp, text='Pi Hole - ' + str(pihole_data[0]), font='Montserrat 7 bold',
-         bg='#171a21', fg=pihole_enabled_colour) \
-    .place(x=25, y=270)
-
-tk.Label(pihole_box, text='Temperature: ' + pihole_data[5] + '°C', font='Montserrat 12', bg='#2a475e',
-         fg='#FFFFFF').place(x=22, y=240)
-tk.Label(pihole_box, text='Memory Usage: ' + pihole_data[6] + '%', font='Montserrat 12', bg='#2a475e',
-         fg='#FFFFFF').place(x=190, y=240)
-tk.Label(pihole_box, text='Percentage Blocked: ' + pihole_data[1], font='Montserrat 12', bg='#2a475e',
-         fg='#FFFFFF').place(x=25, y=292)
-tk.Label(pihole_box, text='Queries Blocked: ' + pihole_data[2], font='Montserrat 12', bg='#2a475e',
-         fg='#FFFFFF').place(x=25, y=320)
-tk.Label(pihole_box, text='Last Updated: ' + str(pihole_data[3]) + ' days, ' + str(pihole_data[4])
-                          + ' hours', font='Montserrat 12', bg='#2a475e', fg='#FFFFFF').place(x=25, y=348)
-
-checkmark_image = Image.open('C:\\Users\\adamw\\PycharmProjects\\Dashboard\\images\\checkmark3.png')
-checkmark = ImageTk.PhotoImage(checkmark_image)
-canvas_checkmark = tk.Canvas(pihole_box, width=77, height=80, bg='#2a475e', bd=0, highlightthickness=0)
-canvas_checkmark.create_image(0, 0, image=checkmark, anchor='nw')
-
-if str(pihole_data[0]) == 'enabled':
-    canvas_checkmark.place(x=280, y=295)
-
-# HARD DRIVE CAPACITIES
-
-hdd_data = hddspace.GetDriveSpace()
-
-hdd_box = tk.Canvas(root, width=350, height=160, bg='#2a475e', highlightthickness=0).place(x=20, y=420)
-hdd_box_top = tk.Canvas(root, width=350, height=20, bg='#1b2838', highlightthickness=0).place(x=20, y=400)
-tk.Label(hdd_box_top, text='Current Hard Drive Capacities', font='Montserrat 7 bold', bg='#1b2838', fg='#FFFFFF') \
-    .place(x=25, y=400)
-
-tk.Label(hdd_box, text="C", font='Montserrat 12 bold', bg='#2a475e', fg='#FFFFFF').place(x=25, y=425)
-tk.Label(hdd_box, text="D", font='Montserrat 12 bold', bg='#2a475e', fg='#FFFFFF').place(x=25, y=455)
-tk.Label(hdd_box, text="E", font='Montserrat 12 bold', bg='#2a475e', fg='#FFFFFF').place(x=25, y=485)
-tk.Label(hdd_box, text="F", font='Montserrat 12 bold', bg='#2a475e', fg='#FFFFFF').place(x=25, y=515)
-tk.Label(hdd_box, text="G", font='Montserrat 12 bold', bg='#2a475e', fg='#FFFFFF').place(x=25, y=545)
-
-tk.Canvas(hdd_box, width=100, height=20, bg="#c7d5e0", bd=0, highlightthickness=0).place(x=50, y=430)
-tk.Canvas(hdd_box, width=100, height=20, bg="#c7d5e0", bd=0, highlightthickness=0).place(x=50, y=460)
-tk.Canvas(hdd_box, width=100, height=20, bg="#c7d5e0", bd=0, highlightthickness=0).place(x=50, y=490)
-tk.Canvas(hdd_box, width=100, height=20, bg="#c7d5e0", bd=0, highlightthickness=0).place(x=50, y=520)
-tk.Canvas(hdd_box, width=100, height=20, bg="#c7d5e0", bd=0, highlightthickness=0).place(x=50, y=550)
-
-if 0 < int(hdd_data[0].percent) <= 25:
-    percentage_colour_c = '#90EE90'
-elif 25 < int(hdd_data[0].percent) <= 50:
-    percentage_colour_c = '#FEB938'
-elif 50 < int(hdd_data[0].percent) <= 75:
-    percentage_colour_c = '#FD9415'
-elif 75 < int(hdd_data[0].percent) < 90:
-    percentage_colour_c = '#E23201'
-else:
-    percentage_colour_c = '#9B0002'
-
-if 0 < int(hdd_data[1].percent) <= 25:
-    percentage_colour_d = '#90EE90'
-elif 25 < int(hdd_data[1].percent) <= 50:
-    percentage_colour_d = '#FEB938'
-elif 50 < int(hdd_data[1].percent) <= 75:
-    percentage_colour_d = '#FD9415'
-elif 75 < int(hdd_data[1].percent) < 90:
-    percentage_colour_d = '#E23201'
-else:
-    percentage_colour_d = '#9B0002'
-
-if 0 < int(hdd_data[2].percent) <= 25:
-    percentage_colour_e = '#90EE90'
-elif 25 < int(hdd_data[2].percent) <= 50:
-    percentage_colour_e = '#FEB938'
-elif 50 < int(hdd_data[2].percent) <= 75:
-    percentage_colour_e = '#FD9415'
-elif 75 < int(hdd_data[2].percent) < 90:
-    percentage_colour_e = '#E23201'
-else:
-    percentage_colour_e = '#9B0002'
-
-if 0 < int(hdd_data[3].percent) <= 25:
-    percentage_colour_f = '#90EE90'
-elif 25 < int(hdd_data[3].percent) <= 50:
-    percentage_colour_f = '#FEB938'
-elif 50 < int(hdd_data[3].percent) <= 75:
-    percentage_colour_f = '#FD9415'
-elif 75 < int(hdd_data[3].percent) < 90:
-    percentage_colour_f = '#E23201'
-else:
-    percentage_colour_f = '#9B0002'
-
-if 0 < int(hdd_data[4].percent) <= 25:
-    percentage_colour_g = '#90EE90'
-elif 25 < int(hdd_data[4].percent) <= 50:
-    percentage_colour_g = '#FEB938'
-elif 50 < int(hdd_data[4].percent) <= 75:
-    percentage_colour_g = '#FD9415'
-elif 75 < int(hdd_data[4].percent) < 90:
-    percentage_colour_g = '#E23201'
-else:
-    percentage_colour_g = '#9B0002'
-
-tk.Canvas(hdd_box, width=int(hdd_data[0].percent), height=20, bg=percentage_colour_c, bd=0,
-          highlightthickness=0).place(x=50, y=430)
-tk.Canvas(hdd_box, width=int(hdd_data[1].percent), height=20, bg=percentage_colour_d, bd=0,
-          highlightthickness=0).place(x=50, y=460)
-tk.Canvas(hdd_box, width=int(hdd_data[2].percent), height=20, bg=percentage_colour_e, bd=0,
-          highlightthickness=0).place(x=50, y=490)
-tk.Canvas(hdd_box, width=int(hdd_data[3].percent), height=20, bg=percentage_colour_f, bd=0,
-          highlightthickness=0).place(x=50, y=520)
-tk.Canvas(hdd_box, width=int(hdd_data[4].percent), height=20, bg=percentage_colour_g, bd=0,
-          highlightthickness=0).place(x=50, y=550)
-
-tk.Label(hdd_box, text=str(hdd_data[0].percent) + '% ', font='Montserrat 12 bold', bg='#2a475e',
-         fg='#FFFFFF').place(x=160, y=425)
-tk.Label(hdd_box, text=str(hdd_data[5][1]) + 'GB / ' + str(hdd_data[5][0]) + 'GB',
-         font='Montserrat 8', bg='#2a475e',
-         fg='#FFFFFF').place(x=240, y=429)
-
-tk.Label(hdd_box, text=str(hdd_data[1].percent) + '%', font='Montserrat 12 bold', bg='#2a475e',
-         fg='#FFFFFF').place(x=160, y=455)
-tk.Label(hdd_box, text=str(hdd_data[6][1]) + 'GB / ' + str(hdd_data[6][0]) + 'GB',
-         font='Montserrat 8', bg='#2a475e',
-         fg='#FFFFFF').place(x=240, y=459)
-
-tk.Label(hdd_box, text=str(hdd_data[2].percent) + '%', font='Montserrat 12 bold', bg='#2a475e',
-         fg='#FFFFFF').place(x=160, y=485)
-tk.Label(hdd_box, text=str(hdd_data[7][1]) + 'GB / ' + str(hdd_data[7][0]) + 'GB',
-         font='Montserrat 8', bg='#2a475e',
-         fg='#FFFFFF').place(x=240, y=489)
-
-tk.Label(hdd_box, text=str(hdd_data[3].percent) + '%', font='Montserrat 12 bold', bg='#2a475e',
-         fg='#FFFFFF').place(x=160, y=515)
-tk.Label(hdd_box, text=str(hdd_data[8][1]) + 'GB / ' + str(hdd_data[8][0]) + 'GB',
-         font='Montserrat 8', bg='#2a475e',
-         fg='#FFFFFF').place(x=240, y=519)
-
-tk.Label(hdd_box, text=str(hdd_data[4].percent) + '%', font='Montserrat 12 bold', bg='#2a475e',
-         fg='#FFFFFF').place(x=160, y=545)
-tk.Label(hdd_box, text=str(hdd_data[9][1]) + 'GB / ' + str(hdd_data[9][0]) + 'GB',
-         font='Montserrat 8', bg='#2a475e',
-         fg='#FFFFFF').place(x=240, y=549)
-
-# 5 2
-# 960
 
 
-print('\nDRAWING DASHBOARD')
-# MAINLOOP
-root.mainloop()
 
-# BGCOLOUR #aeccd0
-# BOXCOLOR #20639B
+
+
+canvas.create_rectangle(
+    805.0,
+    572.0,
+    1227.0,
+    602.0,
+    fill="#F4F4FC",
+    outline="")
+
+canvas.create_rectangle(
+    846.0,
+    572.0,
+    846.0,
+    786.0,
+    fill="#FFFFFF",
+    outline="")
+
+canvas.create_rectangle(
+    1096.0,
+    572.0,
+    1096.0,
+    786.0,
+    fill="#FFFFFF",
+    outline="")
+
+canvas.create_text(
+    816.0,
+    580.0,
+    anchor="nw",
+    text="No.",
+    fill="#AE99C0",
+    font=("Raleway SemiBold", 12 * -1)
+)
+
+canvas.create_text(
+    867.0,
+    580.0,
+    anchor="nw",
+    text="Membership Name",
+    fill="#AE99C0",
+    font=("Raleway SemiBold", 12 * -1)
+)
+
+canvas.create_text(
+    1111.0,
+    580.0,
+    anchor="nw",
+    text="Status",
+    fill="#AE99C0",
+    font=("Raleway SemiBold", 12 * -1)
+)
+
+
+#info color
+image_image_5 = PhotoImage(file=relative_to_assets("image_5.png"))
+image_5 = canvas.create_image(438.0,490.0,image=image_image_5)
+
+image_image_6 = PhotoImage(file=relative_to_assets("image_6.png"))
+image_6 = canvas.create_image(631.0,490.0,image=image_image_6)
+
+image_image_7 = PhotoImage(file=relative_to_assets("image_7.png"))
+image_7 = canvas.create_image(818.0,490.0,image=image_image_7)
+
+
+image_image_10 = PhotoImage(
+    file=relative_to_assets("image_10.png"))
+image_10 = canvas.create_image(
+    515.0,
+    675.0,
+    image=image_image_10
+)
+
+#canvas.create_rectangle(
+    #547.0,
+    #133.0,
+    #577.0,
+    #163.0,
+    #fill="#AE99C0",
+    #outline="")
+window.resizable(False, False)
+window.mainloop()
