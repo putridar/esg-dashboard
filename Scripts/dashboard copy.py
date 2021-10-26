@@ -25,6 +25,7 @@ import icma
 import ungc
 import iigcc
 import topic_model
+import logo
 
 ## FIREBASE
 import os
@@ -121,6 +122,22 @@ def show_esg_rating(input_company) :
     
 
 def show_company_profile(input_company):
+    try:
+        URL = Request(logo.get_logo(input_company), headers={'User-Agent': 'Mozilla/5.0'})
+        raw_data = urlopen(URL).read()
+
+        im = Image.open(BytesIO(raw_data))
+        photo = ImageTk.PhotoImage(im)
+        h = photo.height()
+        w = photo.width()
+        ratio = min(200/w, 100/h)
+        resized = im.resize((int(w*ratio),int(h*ratio)), Image.ANTIALIAS)
+        photo = ImageTk.PhotoImage(resized)
+        label = tk.Label(image=photo)
+        label.image = photo
+        label.place(x=50, y = 240)
+    except:
+        pass
     canvas.create_rectangle(0.0,150.0,295.0,800.0,
                             fill="#F4F4FC",outline="")
     canvas.create_text(122.0,175.0,anchor="nw",text=input_company.upper(),

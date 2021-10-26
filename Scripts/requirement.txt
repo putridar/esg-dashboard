@@ -1,0 +1,15 @@
+python -m spacy download en_core_web_sm
+python -m spacy download en_core_web_lg
+pip install browser_cookie3
+pip install tkhtmlview
+pip install flask
+pip install pyLDAvis --user
+pip install pdfplumber
+pip install spacy
+pip install firebase-admin
+pip install gensim==3.6.0 --user
+pip install bs4
+pip install requests_html
+pip install requests==2.23.0 --user
+pip install nltk==3.2.5 --user
+pip install urllib3==1.25.11 --user
