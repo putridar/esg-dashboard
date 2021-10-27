@@ -31,13 +31,25 @@ def scrape(q):
 
     return links
 
+def filter_link(link, company):
+    filters = ["advertisement",".pdf","finance.yahoo","www."+company,company+".com"]
+    if company not in link.lower():
+        return True
+    for x in filters:
+        if x in link:
+            return True
+    return False
+
+
 def get_logo(company):
     results = scrape(company + " logo")
     links = []
     text = []
+    res = ""
+    logo_list = []
     for x in results:
-      if "1000logos" not in x and "logos" not in x:
-        continue
+      if company not in x:
+          continue
       try:
         page = requests.get(x)
         soup = BeautifulSoup(page.content, "html.parser")
@@ -48,4 +60,8 @@ def get_logo(company):
         res = res.split('"')[0]
       except:
         continue
-    return res
+      if res[0] == "/":
+        res = main[2] + res
+    logo_list.append(res)
+    print(logo_list)
+    return logo_list

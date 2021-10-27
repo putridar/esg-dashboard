@@ -11,6 +11,7 @@ import nltk; nltk.download('stopwords')
 # NLTK Stop words
 from nltk.corpus import stopwords
 stop_words = stopwords.words('english')
+stop_words.extend(["copyright", "cookies"])
 
 import pandas as pd
 import numpy as np
@@ -23,11 +24,19 @@ import spacy
 from PIL import __version__
 from imp import reload
 
+import requests
+import urllib
+from requests_html import HTML
+from requests_html import HTMLSession
 
+from bs4 import BeautifulSoup
 import pdfplumber
 
 import gensim
 from gensim import corpora
+
+from gensim.summarization import summarize, keywords
+from gensim.summarization import mz_keywords
 
 # libraries for visualization
 import pyLDAvis
@@ -35,7 +44,7 @@ import pyLDAvis.gensim_models as gn
 import matplotlib.pyplot as plt
 import seaborn as sns
 #%matplotlib inline
-
+lda_model_tfidf = gensim.models.LdaMulticore.load("lda_model_tfidf0.h5")
 def getPdfFromFirebase(company): #Will return a list pdf name
   #Configure connection with Firebase
   cred = credentials.Certificate("group18---natwest-firebase.json")
@@ -148,6 +157,145 @@ def createCorpus(pdf_name): #receive input as the list
 def get_topic_model(company):
   pdf_name = getPdfFromFirebase(company)
   inputCorpus = createCorpus(pdf_name)
-  lda_model_tfidf = gensim.models.LdaMulticore.load("lda_model_tfidf0.h5")
   topic_dist = lda_model_tfidf[inputCorpus[0]]
   return topic_dist # Contains topic -> percentage in the form of a list of tuple
+
+def get_source(url):
+    try:
+        session = HTMLSession()
+        response = session.get(url)
+        return response
+    except requests.exceptions.RequestException as e:
+        print(e)
+
+def scrape(q):
+    q = urllib.parse.quote_plus(q)
+    result = get_source("https://www.google.com/search?q=" + q)
+    lst = list(result.html.absolute_links)
+    exclude_domains = ('https://www.google.', 'https://google.', 'https://webcache.googleusercontent.', 'http://webcache.googleusercontent.', 'https://policies.google.',
+                       'https://support.google.','https://maps.google.','https://www.instagram.','https://www.youtube.','https://translate.google.com','linkedin.com')
+    links = lst.copy()
+    for url in lst:
+        for domain in exclude_domains:
+            if domain in url:
+                links.remove(url)
+                break
+
+    return links
+
+def filter_text(txt):
+  stop_words = ["inbox","©",":","=","@", "copyright", "cookies","..","\xa0","min","redirecting…","seconds…"]
+  for x in stop_words:
+    if x in txt.lower():
+      return False
+  return True
+
+def filter_txt(txt):
+  stop_words = ["&amp","{","deliver news","one-month","login","sign up","access to the news","captcha","sign in","?","free one-month trial","inbox","©",":","=","@", "copyright", "cookies","..","\xa0","min","redirecting…","seconds…"]
+  for x in stop_words:
+    if x in txt.lower():
+      return False
+  return True
+
+def filter_link(link, company):
+    filters = ["www."+company,company+".com","watch","advertisement",".pdf","finance.yahoo","facebook","bloomberg"]
+    if company not in link.lower():
+        return True
+    for x in filters:
+        if x in link:
+            return True
+    return False
+
+def make_corpus(text):
+  #Processing
+  data_words = list(sent_to_words([text]))
+  # Remove Stop Words
+  data_words_nostops = remove_stopwords(data_words)
+  # Form Bigrams
+  data_words_bigrams = make_bigrams(data_words_nostops)
+  # Initialize spacy 'en' model, keeping only tagger component (for efficiency)
+  # python3 -m spacy download en
+  nlp = spacy.load('en_core_web_sm', disable=['parser', 'ner'])
+  # Do lemmatization keeping only noun, adj, vb, adv
+  data_lemmatized_input = lemmatization(data_words_bigrams, allowed_postags=['NOUN', 'ADJ', 'VERB'])
+  id2word = corpora.Dictionary(data_lemmatized_input)
+  inputCorpus = [id2word.doc2bow(text) for text in data_lemmatized_input]
+  return inputCorpus
+
+def get_summary(company):
+  results = scrape(company + " esg")
+  pdfs = []
+  url = []
+  for x in results:
+    if filter_link(x, company):
+        continue
+    else:
+      url.append(x)
+
+  url.sort()
+  links = []
+  text = []
+  final_list = []
+  scores = []
+  count = 0
+  for x in url:
+    try:
+      page = requests.get(x)
+      soup = BeautifulSoup(page.content, "html.parser")
+      soup = str(soup.find_all('div')).split('>')
+      main = x.split('/')
+      text = list(set(filter(lambda x:"<br" in x or "</p" in x, soup)))
+    except:
+      continue
+
+    text = list(filter(lambda x:filter_text(x), text))
+    res = ""
+    for sent in text:
+      sent = sent.split("</p")[0]
+      sent = sent.split("<br")[0]
+      sent = sent.split("/n")[0]
+      res += (sent.lower() + " ")
+    corp = make_corpus(res)
+    topic_result = lda_model_tfidf[corp[0]]
+    topic_result.sort(key = lambda x:x[1], reverse = True)
+    for x in topic_result:
+      if (x[0]==1 and x[1] >= 0.2):
+        scores.append((topic_result[0][1],count))
+        count += 1
+        final_list.append(res)
+        break
+      elif (x[0]==9 and x[1] >= 0.2):
+        scores.append((topic_result[0][1],count))
+        count += 1
+        final_list.append(res)
+        break
+    print(topic_result)
+    #print(len(res))
+  summ = []
+  curr = 0
+  scores.sort(key = lambda x:x[0], reverse = True)
+  print(scores)
+  final_list = list(set(final_list))
+  final_res = final_list.copy()
+  while final_list and len(summ) < 2:
+    print(final_res[scores[curr][1]])
+    try:
+      summary_result = summarize(final_res[scores[curr][1]], ratio=0.1, word_count = 50)
+    except:
+      pass
+    else:
+      summ.append(summary_result)
+    curr += 1
+    final_list.pop(0)
+  final_summary = ""
+  for x in summ:
+    temp = x.split("\n")
+    temp_text = ""
+    for y in temp:
+      if not filter_txt(y):
+        continue
+      temp_text += y +"\n"
+    final_summary = final_summary + (temp_text)
+  print("Result:")
+  print(final_summary)
+  return final_summary

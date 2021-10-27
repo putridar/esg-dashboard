@@ -122,40 +122,50 @@ def show_esg_rating(input_company) :
     
 
 def show_company_profile(input_company):
-    try:
-        URL = Request(logo.get_logo(input_company), headers={'User-Agent': 'Mozilla/5.0'})
-        raw_data = urlopen(URL).read()
-
-        im = Image.open(BytesIO(raw_data))
-        photo = ImageTk.PhotoImage(im)
-        h = photo.height()
-        w = photo.width()
-        ratio = min(200/w, 100/h)
-        resized = im.resize((int(w*ratio),int(h*ratio)), Image.ANTIALIAS)
-        photo = ImageTk.PhotoImage(resized)
-        label = tk.Label(image=photo)
-        label.image = photo
-        label.place(x=50, y = 240)
-    except:
-        pass
     canvas.create_rectangle(0.0,150.0,295.0,800.0,
                             fill="#F4F4FC",outline="")
     canvas.create_text(122.0,175.0,anchor="nw",text=input_company.upper(),
                        fill="#192159",font=("Raleway SemiBold", 24 * -1))
-    canvas.create_rectangle(90.0,220.0,204.0,334.0,
-                            fill="#AE99C0",outline="")
+    logo_list = logo.get_logo(input_company)
+    found = False
+    for x in logo_list:
+        try:
+            URL = Request(x, headers={'User-Agent': 'Mozilla/5.0'})
+            raw_data = urlopen(URL).read()
+            im = Image.open(BytesIO(raw_data))
+            photo = ImageTk.PhotoImage(im)
+            h = photo.height()
+            w = photo.width()
+            ratio = min(200/w, 100/h)
+            resized = im.resize((int(w*ratio),int(h*ratio)), Image.ANTIALIAS)
+            photo = ImageTk.PhotoImage(resized)
+            label = tk.Label(image=photo)
+            label.image = photo
+            label.place(x=50, y = 240)
+        except:
+            continue
+        else:
+            found = True
+            break
+        
+    if not found:    
+        canvas.create_rectangle(90.0,220.0,204.0,334.0,
+                                fill="#AE99C0",outline="")
     canvas.create_text(97.0, 378.0,anchor="nw",text="Continent: Asia",
                        fill="#000000",font=("Raleway Regular", 14 * -1))
     canvas.create_text(98.0,354.0,anchor="nw",text="Country: Singapore",
                        fill="#000000",font=("Raleway Regular", 14 * -1))
 
 def show_summary(input_company):
-    canvas.create_rectangle(359.0,133.0, 1371.0, 300.0, fill="white",outline="")
-    canvas.create_text(359.0, 133.0, anchor="nw",text="ESG Article Summarization",fill="#192159",
-                       font=("Raleway Bold", 18 * -1))
-    sum_label = tk.Label(canvas, text=summary.get_summary(input_company), font=("Raleway Bold", 14 * -1),
+    result = topic_model.get_summary(input_company)
+    if not result:
+        result = summary.get_summary(input_company)
+    canvas.create_rectangle(359.0,123.0, 1371.0, 290.0, fill="white",outline="")
+    canvas.create_text(359.0, 123.0, anchor="nw",text="ESG Article Summarization",fill="#192159",
+                       font=("Raleway Bold", 16 * -1))
+    sum_label = tk.Label(canvas, text=result, font=("Raleway Bold", 14 * -1),
                  wraplength=900, justify="left", fg="#000000")
-    sum_label.place(x=355, y=153)
+    sum_label.place(x=355, y=143)
 
 def show_keywords(input_company):
     canvas.create_text(359.0,440.0,anchor="nw",text="Sustainability Report Topic Modelling",
