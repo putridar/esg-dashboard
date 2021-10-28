@@ -1,3 +1,7 @@
+'''  
+   File used to extract members of ICMA. From the extracted list, this file will determine whether a company is a member of ICMA
+'''
+
 # Install Relevant Libraries
 # pip install openpyxl --upgrade --pre
 # pip install fuzzywuzzy
@@ -20,6 +24,21 @@ for x in range(len(icma_lst)):
 ## name = input("Input the company name: ")
 
 # Function to detect UNEP FI members
+
+'''  
+   Function used to check whether a company is member of ICMA
+
+   Parameters
+   ----------
+   arg1 : name
+       Name of company
+
+   Returns
+   -------
+   boolean
+       True if a company is member of ICMA, False otherwise
+'''
+
 def is_member_icma(name):
   for x in icma_membership_lst:
     if fuzz.partial_ratio(x.lower(), name.lower()) >= 90:
