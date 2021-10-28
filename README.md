@@ -6,3 +6,4 @@ This project is National University of Singapore BT4103 Capstone Project for Nat
 2. Run ```python dashbaord copy.py```
 3. A Tkinter window will show up and the platform can be used
 
+![dashboard](https://github.com/putridar/esg-dashboard/blob/main/dashboard.jpeg)
