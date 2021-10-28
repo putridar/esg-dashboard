@@ -1,3 +1,8 @@
+'''  
+   File used to extract members of UNEP FI. From the extracted list, this file will determine whether a company is a member of UNEP FI
+'''
+
+
 # Install Relevant Libraries
 # pip install openpyxl --upgrade --pre
 # pip install fuzzywuzzy
@@ -23,6 +28,21 @@ for x in range(len(lst)):
 ## name = input("Input the company name: ")
 
 # Function to detect UNEP FI members
+
+'''  
+   Function used to check whether a company is member of UNEP FI
+
+   Parameters
+   ----------
+   arg1 : name
+       Name of company
+
+   Returns
+   -------
+   boolean
+       True if a company is member of UNEP FI, False otherwise
+'''
+
 def is_member_unepfi(name):
   for x in membership_lst:
     if fuzz.partial_ratio(x.lower(), name.lower()) >= 90:
