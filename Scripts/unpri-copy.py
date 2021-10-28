@@ -12,7 +12,9 @@ import fuzzywuzzy as fw
 from fuzzywuzzy import fuzz
 unpri = pd.read_excel("signatorydirectoryupdate05082021_681089.xlsx")
 
-'''  
+# Function to detect UNPRI members
+def is_member(name):
+   '''  
    Function used to check whether a company is member of UNPRI
 
    Parameters
@@ -24,10 +26,7 @@ unpri = pd.read_excel("signatorydirectoryupdate05082021_681089.xlsx")
    -------
    boolean
        True if a company is member of UNPRI, False otherwise
-'''
-
-# Function to detect UNPRI members
-def is_member(name):
+   '''
   for x in unpri['Account Name']:
     if fuzz.partial_ratio(x, name) >= 90:
       return True
