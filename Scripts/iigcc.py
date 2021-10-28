@@ -13,7 +13,8 @@ from bs4 import BeautifulSoup
 from fuzzywuzzy import fuzz
 import browser_cookie3
 
-'''  
+def is_member_iigcc(name):
+   '''  
    Function used to check whether a company is member of IIGCC
 
    Parameters
@@ -25,9 +26,7 @@ import browser_cookie3
    -------
    boolean
        True if a company is member of IIGCC, False otherwise
-'''
-
-def is_member_iigcc(name):
+   '''
   url = 'https://www.iigcc.org/about-us/our-members/'
   page = requests.get(url)
   soup = BeautifulSoup(page.content, "html.parser")
