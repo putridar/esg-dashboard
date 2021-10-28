@@ -43,25 +43,36 @@ def filter_link(link, company):
 
 def get_logo(company):
     results = scrape(company + " logo")
+    print(results)
     links = []
     text = []
     res = ""
     logo_list = []
+    curr = company.split(" ")
+    parsed1 = ""
+    parsed2 = ""
+    for x in range(len(curr)):
+        if x == 0:
+            parsed1 += curr[x]
+            parsed2 += curr[x]
+        else:
+            parsed1 += "-" + curr[x]
+            parsed2 += "_" + curr[x]
     for x in results:
-      if company not in x:
+      if (company not in x.lower()) and (parsed1 not in x.lower()) and (parsed2 not in x.lower()):
           continue
       try:
         page = requests.get(x)
         soup = BeautifulSoup(page.content, "html.parser")
         soup = str(soup.find_all('div')).split('>')
         main = x.split('/')
-        res = list(set(filter(lambda x:company in x.lower() and "img" in x.lower(), soup)))[0]
+        res = list(set(filter(lambda x:(parsed2 in x.lower() or parsed1 in x.lower() or company in x.lower()) and "img" in x.lower(), soup)))[0]
         res = res.split('src="')[1]
         res = res.split('"')[0]
       except:
         continue
       if res[0] == "/":
         res = main[2] + res
-    logo_list.append(res)
+      logo_list.append(res)
     print(logo_list)
     return logo_list

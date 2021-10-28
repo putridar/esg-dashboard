@@ -284,10 +284,10 @@ def get_summary(company):
   print(scores)
   final_list = list(set(final_list))
   final_res = final_list.copy()
-  while final_list and len(summ) < 2:
+  while final_list and len(summ) < 3:
     print(final_res[scores[curr][1]])
     try:
-      summary_result = summarize(final_res[scores[curr][1]], ratio=0.1, word_count = 50)
+      summary_result = summarize(final_res[scores[curr][1]], ratio=0.1, word_count = 30)
     except:
       pass
     else:
