@@ -184,7 +184,7 @@ def scrape(q):
     return links
 
 def filter_text(txt):
-  stop_words = ["inbox","©",":","=","@", "copyright", "cookies","..","\xa0","min","redirecting…","seconds…"]
+  stop_words = ["free newsletter","inbox","©",":","=","@", "copyright", "cookies","..","\xa0","min","redirecting…","seconds…"]
   for x in stop_words:
     if x in txt.lower():
       return False
@@ -198,8 +198,15 @@ def filter_txt(txt):
   return True
 
 def filter_link(link, company):
-    filters = ["www."+company,company+".com","watch","advertisement",".pdf","finance.yahoo","facebook","bloomberg"]
-    if company not in link.lower():
+    filters = ["watch","advertisement",".pdf","finance.yahoo","facebook","bloomberg"]
+    curr = company.split(" ")
+    parsed = ""
+    for x in range(len(curr)):
+        if x == 0:
+            parsed += curr[x]
+        else:
+            parsed += "-" + curr[x]
+    if company not in link.lower()and parsed not in link.lower():
         return True
     for x in filters:
         if x in link:

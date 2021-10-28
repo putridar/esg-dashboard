@@ -61,7 +61,14 @@ def remove_stopwords(sen):
     return sen_new
 def filter_link(link, company):
     filters = ["watch","advertisement",".pdf","finance.yahoo","facebook","bloomberg"]
-    if company not in link.lower():
+    curr = company.split(" ")
+    parsed = ""
+    for x in range(len(curr)):
+        if x == 0:
+            parsed += curr[x]
+        else:
+            parsed += "-" + curr[x]
+    if company not in link.lower()and parsed not in link.lower():
         return True
     for x in filters:
         if x in link:
