@@ -3,7 +3,9 @@ This project is National University of Singapore BT4103 Capstone Project for Nat
 
 # How to use this
 1. Run ```pip install -r requirements.txt``` to install dependencies
-2. Run ```python dashboard-copy.py```
-3. A Tkinter window will show up and the platform can be used
+2. Run ```python -m spacy download en_core_web_sm```
+3. Run ```python -m spacy download en_core_web_lg```
+4. Run ```python dashboard-copy.py```
+5. A Tkinter window will show up and the platform can be used
 
 ![dashboard](https://github.com/putridar/esg-dashboard/blob/main/dashboard.jpeg)
