@@ -1,3 +1,7 @@
+'''  
+   File used to extract members of UNGC. From the extracted list, this file will determine whether a company is a member of UNGC
+'''
+
 # Install Relevant Libraries
 # pip install openpyxl --upgrade --pre
 # pip install fuzzywuzzy
@@ -6,6 +10,20 @@
 import requests
 from bs4 import BeautifulSoup
 from fuzzywuzzy import fuzz
+
+'''  
+   Function used to check whether a company is member of UNGC
+
+   Parameters
+   ----------
+   arg1 : name
+       Name of company
+
+   Returns
+   -------
+   boolean
+       True if a company is member of UNGC, False otherwise
+'''
 
 def is_member_ungc(name):
   name = name.replace(' ', '+').lower()
