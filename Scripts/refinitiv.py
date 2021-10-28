@@ -3,6 +3,20 @@ import requests
 from bs4 import BeautifulSoup
 
 def name_to_ticker(name):
+  """
+  Find stock ticker code based on company name
+  
+    Parameters
+    ----------
+    name : str
+        Input the company name
+
+    Returns
+    -------
+    str
+        Output stock ticker code
+  """
+  
   try:
     url = 'https://www.reuters.com/finance/stocks/lookup?searchType=any&comSortBy=marketcap&sortBy=&dateRange=&search=' + name
     page = requests.get(url)
@@ -12,6 +26,20 @@ def name_to_ticker(name):
     return 'NA'
 
 def name_to_name(name):
+  """
+  Find the full company name based on searched company name
+  
+    Parameters
+    ----------
+    name : str
+        Input the company name
+
+    Returns
+    -------
+    str
+        Output full company name
+  """
+  
   try:
     url = 'https://www.reuters.com/finance/stocks/lookup?searchType=any&comSortBy=marketcap&sortBy=&dateRange=&search=' + name
     page = requests.get(url)
@@ -21,6 +49,19 @@ def name_to_name(name):
     return 'NA'
 
 def RefinitivOutput(company_name):
+  """
+  Find ESG rating details based on company name
+  
+    Parameters
+    ----------
+    name : str
+        Input the company name
+
+    Returns
+    -------
+    str
+        Output ESG rating details of the company
+  """
   # If we don't find the ticker, output NA
   if name_to_ticker(company_name) == 'NA':
     return 'NA'
@@ -53,6 +94,19 @@ def RefinitivOutput(company_name):
     return
 
 def RefinitivList(company_name):
+  """
+  Find list of ESG rating details based on company name
+  
+    Parameters
+    ----------
+    name : str
+        Input the company name
+
+    Returns
+    -------
+    list
+        Output list of ESG rating details (company name, ESG score, environment score, social score, governance score)
+  """
   # If we don't find the ticker, output NA
   if name_to_ticker(company_name) == 'NA':
     return 'NA'
