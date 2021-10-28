@@ -1,3 +1,7 @@
+'''  
+   File used to extract members of UNPRI. From the extracted list, this file will determine whether a company is a member of UNPRI
+'''
+
 # Install Relevant Libraries
 # pip install openpyxl --upgrade --pre
 # pip install fuzzywuzzy
@@ -8,7 +12,19 @@ import fuzzywuzzy as fw
 from fuzzywuzzy import fuzz
 unpri = pd.read_excel("signatorydirectoryupdate05082021_681089.xlsx")
 
-## name = input("Input the company name: ")
+'''  
+   Function used to check whether a company is member of UNPRI
+
+   Parameters
+   ----------
+   arg1 : name
+       Name of company
+
+   Returns
+   -------
+   boolean
+       True if a company is member of UNPRI, False otherwise
+'''
 
 # Function to detect UNPRI members
 def is_member(name):
