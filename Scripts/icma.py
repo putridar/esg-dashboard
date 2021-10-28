@@ -25,7 +25,8 @@ for x in range(len(icma_lst)):
 
 # Function to detect UNEP FI members
 
-'''  
+def is_member_icma(name):
+   '''  
    Function used to check whether a company is member of ICMA
 
    Parameters
@@ -37,9 +38,7 @@ for x in range(len(icma_lst)):
    -------
    boolean
        True if a company is member of ICMA, False otherwise
-'''
-
-def is_member_icma(name):
+   '''
   for x in icma_membership_lst:
     if fuzz.partial_ratio(x.lower(), name.lower()) >= 90:
         return True
