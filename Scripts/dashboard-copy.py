@@ -100,23 +100,28 @@ def show_esg_rating(input_company) :
         env_score = esg_rating[2][-2:]
         social_score = esg_rating[3][-2:]
         gov_score = esg_rating[4][-2:]
+        esg_rank = esg_rating[5].split(':')[1]
+        actual_rank = int(esg_rank.split('/')[0][1:])
+        industry = int(esg_rank.split('/')[1])
 
         #values
-        def what_color(score):
-            if (score < 30):
-                return "#FF8080"
-            elif (score < 60):
+        def what_color():
+            per30 = int(industry * 3 / 10)
+            per70 = int(industry * 7 / 10)
+            if (actual_rank < per30):
+                return "#90D27F"
+            elif (actual_rank < per70):
                 return "#FFAD71"
             else:
-                return "#90D27F"
+                return "#FF8080"
         
-        canvas.create_text(405.0, 300.0, anchor="nw",text=esg_score, fill=what_color(int(esg_score)),
+        canvas.create_text(405.0, 300.0, anchor="nw",text=esg_score, fill=what_color(),
                            font=("Raleway SemiBold", 48 * -1))
-        canvas.create_text(595.0,300.0,anchor="nw",text=env_score,fill=what_color(int(env_score)),
+        canvas.create_text(595.0,300.0,anchor="nw",text=env_score,fill="#192159",
                            font=("Raleway SemiBold", 48 * -1))
-        canvas.create_text(780.0,300.0,anchor="nw",text=social_score,fill=what_color(int(social_score)),
+        canvas.create_text(780.0,300.0,anchor="nw",text=social_score,fill="#192159",
                            font=("Raleway SemiBold", 48 * -1))
-        canvas.create_text(965.0, 300.0,anchor="nw", text=gov_score, fill=what_color(int(gov_score)),
+        canvas.create_text(965.0, 300.0,anchor="nw", text=gov_score, fill="#192159",
                            font=("Raleway SemiBold", 48 * -1))
 
     
@@ -322,7 +327,7 @@ def show_topic_model(input_company):
     
     # stretch enough to get all data items in
     x_stretch = 50
-    x_width = 60
+    x_width = 30
     
     # gap between left canvas edge and y axis
     x_gap = 30
@@ -340,16 +345,17 @@ def show_topic_model(input_company):
         # draw the bar
         canvas.create_rectangle(x0, y0, x1, y1, fill="#401564")
         # put the y value above each bar
-        canvas.create_text(x0+2, y0, anchor=tk.SW, text=str(y))
+        canvas.create_text(x0+5, y0, anchor=tk.SW, text=str(round(y,3)))
 
     
 def click():
-    show_company_profile(variable.get()) # Company Profile
-    show_summary(variable.get()) # Summary    
-    show_keywords(variable.get()) #Keywords
-    show_membership(variable.get()) #Membership
-    show_esg_rating(variable.get()) #Ratings
-    show_topic_model(variable.get())
+    company_name = variable.get().lower()
+    show_company_profile(company_name) # Company Profile
+    show_summary(company_name) # Summary    
+    show_keywords(company_name) #Keywords
+    show_membership(company_name) #Membership
+    show_esg_rating(company_name) #Ratings
+    show_topic_model(company_name)
 
     image_image_10 = PhotoImage(file=relative_to_assets("image_10.png"))
     image_10 = canvas.create_image(515.0,675.0,image=image_image_10)

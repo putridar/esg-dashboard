@@ -39,10 +39,10 @@ def is_member_icma(name):
    boolean
        True if a company is member of ICMA, False otherwise
    '''
-  for x in icma_membership_lst:
-    if fuzz.partial_ratio(x.lower(), name.lower()) >= 90:
-        return True
-  return False
+   for x in icma_membership_lst:
+      if fuzz.partial_ratio(x.lower(), name.lower()) >= 90:
+         return True
+   return False
 
 # Output
 ## is_member(name)

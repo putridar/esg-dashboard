@@ -123,6 +123,7 @@ def RefinitivList(company_name):
       result.append("Environment Score: " + str(dictionary['esgScore']['TR.EnvironmentPillar']['score']))
       result.append("Social Score: " + str(dictionary['esgScore']['TR.SocialPillar']['score']))
       result.append("Governance Score: " + str(dictionary['esgScore']['TR.GovernancePillar']['score']))
+      result.append("Rank in Industry: " + str(dictionary['industryComparison']['rank']) + "/" + str(dictionary['industryComparison']['totalIndustries']))
       return result
     except:
       return 'NA'
