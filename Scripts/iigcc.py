@@ -1,3 +1,7 @@
+'''  
+   File used to extract members of IIGCC. From the extracted list, this file will determine whether a company is a member of IIGCC
+'''
+
 # Install Relevant Libraries
 # pip install openpyxl --upgrade --pre
 # pip install fuzzywuzzy
@@ -8,6 +12,20 @@ import requests
 from bs4 import BeautifulSoup
 from fuzzywuzzy import fuzz
 import browser_cookie3
+
+'''  
+   Function used to check whether a company is member of IIGCC
+
+   Parameters
+   ----------
+   arg1 : name
+       Name of company
+
+   Returns
+   -------
+   boolean
+       True if a company is member of IIGCC, False otherwise
+'''
 
 def is_member_iigcc(name):
   url = 'https://www.iigcc.org/about-us/our-members/'
