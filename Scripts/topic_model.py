@@ -44,7 +44,8 @@ import pyLDAvis.gensim_models as gn
 import matplotlib.pyplot as plt
 import seaborn as sns
 #%matplotlib inline
-lda_model_tfidf = gensim.models.LdaMulticore.load("lda_model_tfidf0.h5")
+lda_model_tfidf2 = gensim.models.LdaMulticore.load("lda_model_tfidf0.h5")
+lda_model_tfidf = gensim.models.LdaMulticore.load("lda_model_tfidf0 (1).h5")
 def getPdfFromFirebase(company): #Will return a list pdf name
   #Configure connection with Firebase
   cred = credentials.Certificate("group18---natwest-firebase.json")
@@ -191,14 +192,14 @@ def filter_text(txt):
   return True
 
 def filter_txt(txt):
-  stop_words = ["&amp","{","deliver news","one-month","login","sign up","access to the news","captcha","sign in","?","free one-month trial","inbox","©",":","=","@", "copyright", "cookies","..","\xa0","min","redirecting…","seconds…"]
+  stop_words = ["ii","&amp","{","deliver news","one-month","login","sign up","access to the news","captcha","sign in","?","free one-month trial","inbox","©",":","=","@", "copyright", "cookies","..","\xa0","min","redirecting…","seconds…"]
   for x in stop_words:
     if x in txt.lower():
       return False
   return True
 
 def filter_link(link, company):
-    filters = ["watch","advertisement",".pdf","finance.yahoo","facebook","bloomberg"]
+    filters = ["msci","watch","advertisement",".pdf","finance.yahoo","facebook","bloomberg"]
     curr = company.split(" ")
     parsed = ""
     for x in range(len(curr)):
@@ -266,17 +267,22 @@ def get_summary(company):
     topic_result = lda_model_tfidf[corp[0]]
     topic_result.sort(key = lambda x:x[1], reverse = True)
     for x in topic_result:
-      if (x[0]==1 and x[1] >= 0.2):
+      if (x[0] == 0 or x[0] == 2 or x[0] == 3 or x[0] == 7 or x[0] == 8) and x[1] >= 0.5:
         scores.append((topic_result[0][1],count))
         count += 1
         final_list.append(res)
         break
-      elif (x[0]==9 and x[1] >= 0.2):
+      elif (x[0]==5 and x[1] >= 0.2):
         scores.append((topic_result[0][1],count))
         count += 1
         final_list.append(res)
         break
-    print(topic_result)
+      elif (x[0]==6 and x[1] >= 0.2):
+        scores.append((topic_result[0][1],count))
+        count += 1
+        final_list.append(res)
+        break
+    #print(topic_result)
     #print(len(res))
   summ = []
   curr = 0
@@ -287,7 +293,7 @@ def get_summary(company):
   while final_list and len(summ) < 3:
     print(final_res[scores[curr][1]])
     try:
-      summary_result = summarize(final_res[scores[curr][1]], ratio=0.1, word_count = 30)
+      summary_result = summarize(final_res[scores[curr][1]], ratio=0.1, word_count = 40)
     except:
       pass
     else:
