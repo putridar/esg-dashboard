@@ -349,7 +349,8 @@ def show_topic_model(input_company):
 
     
 def click():
-    label = tk.Label(window, text="Waiting for task to finish.")
+    root = tk.Tk()
+    label = tk.Label(root, text="Waiting for task to finish.")
     label.pack()
 
     def task():
