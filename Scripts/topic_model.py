@@ -44,8 +44,14 @@ import pyLDAvis.gensim_models as gn
 import matplotlib.pyplot as plt
 import seaborn as sns
 #%matplotlib inline
-lda_model_tfidf2 = gensim.models.LdaMulticore.load("lda_model_tfidf0.h5")
-lda_model_tfidf = gensim.models.LdaMulticore.load("lda_model_tfidf0 (1).h5")
+
+import warnings
+warnings.filterwarnings("ignore")
+
+lda_model_tfidf =  gensim.models.ldamodel.LdaModel.load("lda_model_tfidf2.h5")
+#lda_model_tfidf1 =  gensim.models.ldamodel.LdaModel.load("lda_model_tfidf0.h5")
+#lda_model_tfidf2 = gensim.models.LdaMulticore.load("lda_model_tfidf0 (1).h5")
+    
 def getPdfFromFirebase(company): #Will return a list pdf name
   #Configure connection with Firebase
   cred = credentials.Certificate("group18---natwest-firebase.json")
@@ -159,6 +165,9 @@ def get_topic_model(company):
   pdf_name = getPdfFromFirebase(company)
   inputCorpus = createCorpus(pdf_name)
   topic_dist = lda_model_tfidf[inputCorpus[0]]
+  for x in topic_dist:
+    print(lda_model_tfidf.print_topic(x[0], topn=10))
+  print(topic_dist)
   return topic_dist # Contains topic -> percentage in the form of a list of tuple
 
 def get_source(url):
@@ -267,17 +276,17 @@ def get_summary(company):
     topic_result = lda_model_tfidf[corp[0]]
     topic_result.sort(key = lambda x:x[1], reverse = True)
     for x in topic_result:
-      if (x[0] == 0 or x[0] == 2 or x[0] == 3 or x[0] == 7 or x[0] == 8) and x[1] >= 0.5:
+      if (x[0] == 3 or x[0] == 7 or x[0] == 9 or x[0] == 10) and x[1] >= 0.5:
         scores.append((topic_result[0][1],count))
         count += 1
         final_list.append(res)
         break
-      elif (x[0]==5 and x[1] >= 0.2):
+      elif (x[0]==2 or x[0] == 4 or x[0]==6) and x[1] >= 0.2:
         scores.append((topic_result[0][1],count))
         count += 1
         final_list.append(res)
         break
-      elif (x[0]==6 and x[1] >= 0.2):
+      elif (x[0]==5) and x[1] >= 0.2:
         scores.append((topic_result[0][1],count))
         count += 1
         final_list.append(res)
@@ -290,9 +299,11 @@ def get_summary(company):
   print(scores)
   final_list = list(set(final_list))
   final_res = final_list.copy()
+  n = len(final_list)
+  print(final_res)
   while final_list and len(summ) < 3:
-    print(final_res[scores[curr][1]])
     try:
+      print(final_res[scores[curr][1]])
       summary_result = summarize(final_res[scores[curr][1]], ratio=0.1, word_count = 40)
     except:
       pass
