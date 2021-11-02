@@ -349,17 +349,26 @@ def show_topic_model(input_company):
 
     
 def click():
-    company_name = variable.get().lower()
-    show_company_profile(company_name) # Company Profile
-    show_summary(company_name) # Summary    
-    show_keywords(company_name) #Keywords
-    show_membership(company_name) #Membership
-    show_esg_rating(company_name) #Ratings
-    show_topic_model(company_name)
+    label = tk.Label(window, text="Waiting for task to finish.")
+    label.pack()
 
-    image_image_10 = PhotoImage(file=relative_to_assets("image_10.png"))
-    image_10 = canvas.create_image(515.0,675.0,image=image_image_10)
-    
+    def task():
+        # The window will stay open until this function call ends.
+          
+        company_name = variable.get().lower()
+        show_company_profile(company_name) # Company Profile
+        show_summary(company_name) # Summary    
+        show_keywords(company_name) #Keywords
+        show_membership(company_name) #Membership
+        show_esg_rating(company_name) #Ratings
+        show_topic_model(company_name)
+
+        #image_image_10 = PhotoImage(file=relative_to_assets("image_10.png"))
+        #image_10 = canvas.create_image(515.0,675.0,image=image_image_10)
+        root.destroy()
+        
+    window.after(200, task)
+    label.after(1000 , lambda: label.destroy())
 
 #Header Left 
 canvas = Canvas(window,bg = "#FFFFFF",height = 814,width = 1371,
