@@ -31,9 +31,9 @@ def is_member_ungc(name):
    soup = BeautifulSoup(page.content, "html.parser")
    lst = soup.find_all("th", {"class": "name"})[1:]
    for x in lst:
-      a = x.findChild("a")['href'][32:].lower()
+      a = x.findChild("a")['href'].lower()
       a = a.replace('-', ' ')
-   if fuzz.partial_ratio(a, name) >= 90:
+   if fuzz.partial_ratio(a.lower(), name.lower()) >= 90:
       return True
    return False
 
