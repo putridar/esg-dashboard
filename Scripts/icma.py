@@ -17,13 +17,13 @@ soup = BeautifulSoup(page.content, "html.parser")
 icma_lst = soup.find_all("td")
 icma_membership_lst = []
 for x in range(len(icma_lst)):
-   if x%5 == 0:
-     curr = icma_lst[x].text.rstrip()
-     icma_membership_lst.append(curr)
+   for y in range(len(icma_lst[x])):
+      curr = icma_lst[x].find_all('a')
+      if len(curr) == 0:
+         continue
+      icma_membership_lst.append(curr[0].contents[0])
 
-## name = input("Input the company name: ")
-
-# Function to detect UNEP FI members
+# Function to detect ICMA members
 
 def is_member_icma(name):
    '''  
@@ -40,7 +40,7 @@ def is_member_icma(name):
        True if a company is member of ICMA, False otherwise
    '''
    for x in icma_membership_lst:
-      if fuzz.partial_ratio(x.lower(), name.lower()) >= 90:
+      if fuzz.partial_ratio(x.lower(), name.lower()) >= 95:
          return True
    return False
 
