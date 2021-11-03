@@ -28,7 +28,7 @@ def is_member(name):
        True if a company is member of UNPRI, False otherwise
    '''
   for x in unpri['Account Name']:
-    if fuzz.partial_ratio(x, name) >= 90:
+    if fuzz.partial_ratio(x.lower(), name.lower()) >= 95:
       return True
   return False
 
