@@ -1,13 +1,13 @@
 browser_cookie3
 tkhtmlview
 flask
-pyLDAvis --user
+pyLDAvis
 pdfplumber
 spacy
 firebase-admin
-gensim==3.6.0 --user
+gensim==3.6.0
 bs4
 requests_html
-requests==2.23.0 --user
-nltk==3.2.5 --user
-urllib3==1.25.11 --user
+requests==2.23.0
+nltk==3.2.5
+urllib3==1.25.11
