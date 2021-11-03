@@ -33,8 +33,8 @@ def is_member_ungc(name):
    for x in lst:
       a = x.findChild("a")['href'].lower()
       a = a.replace('-', ' ')
-   if fuzz.partial_ratio(a.lower(), name.lower()) >= 90:
-      return True
+      if fuzz.partial_ratio(a.lower(), name.lower()) >= 90:
+         return True
    return False
 
 # Output
