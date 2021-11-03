@@ -33,8 +33,7 @@ def is_member_iigcc(name):
    for x in soup.find_all("a"):
       if len(x.contents) == 0 or isinstance(x.contents[0], str) == False:
          continue
-      if fuzz.partial_ratio(x.contents[0].lower(), name.lower()) >= 90:
-         print(x.contents[0].lower())
+      if fuzz.partial_ratio(x.contents[0].lower(), name.lower()) >= 95:
          return True
    return False
 
