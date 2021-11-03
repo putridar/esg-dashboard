@@ -20,10 +20,10 @@ lst = soup.find_all("td")
 membership_lst = []
 
 for x in range(len(lst)):
-  if x%5 == 0:
-    curr = str(lst[x]).split('/">')[1]
-    curr = curr.split("</")[0]
-    membership_lst.append(curr)
+    if x%5 == 0:
+        curr = str(lst[x]).split('/">')[1]
+        curr = curr.split("</")[0]
+        membership_lst.append(curr)
 
 ## name = input("Input the company name: ")
 
@@ -43,10 +43,12 @@ def is_member_unepfi(name):
    boolean
        True if a company is member of UNEP FI, False otherwise
    '''
-  for x in membership_lst:
-    if fuzz.partial_ratio(x.lower(), name.lower()) >= 90:
-      return True
-  return False
+    for x in membership_lst:
+        if x.lower() == 'ing' or x.lower() == 'tal' or x.lower() == 'an post':
+            continue
+        if fuzz.partial_ratio(x.lower(), name.lower()) >= 95:
+            return True
+    return False
 
    
 
