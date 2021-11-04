@@ -30,7 +30,7 @@ for x in range(len(lst)):
 # Function to detect UNEP FI members
 
 def is_member_unepfi(name):
-  '''  
+    '''  
    Function used to check whether a company is member of UNEP FI
 
    Parameters
@@ -43,12 +43,15 @@ def is_member_unepfi(name):
    boolean
        True if a company is member of UNEP FI, False otherwise
    '''
+    
     for x in membership_lst:
         if x.lower() == 'ing' or x.lower() == 'tal' or x.lower() == 'an post':
             continue
         if fuzz.partial_ratio(x.lower(), name.lower()) >= 95:
             return True
     return False
+  
+  
 
    
 
