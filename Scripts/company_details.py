@@ -8,6 +8,7 @@ from requests_html import HTMLSession
 
 from bs4 import BeautifulSoup
 
+#source: https://gist.github.com/mlisovyi/e8df5c907a8250e14cc1e5933ed53ffd
 countries = [
 {'timezones': ['Europe/Andorra'], 'code': 'AD', 'continent': 'Europe', 'name': 'Andorra', 'capital': 'Andorra la Vella'},
 {'timezones': ['Asia/Kabul'], 'code': 'AF', 'continent': 'Asia', 'name': 'Afghanistan', 'capital': 'Kabul'},
