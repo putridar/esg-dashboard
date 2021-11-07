@@ -81,13 +81,16 @@ def show_esg_rating(input_company) :
     #canvas.create_rectangle(359.0,166.0, 797.0, 380.0, fill="#FFFFFF",outline="")
     
     #Placeholder boxes for ESG Rating
-    canvas.create_rectangle(359.0,166.0,797.0,274.0, fill="#401564",outline="")
+    canvas.create_rectangle(359.0,166.0,567.0,274.0, fill="#401564",outline="")
+    canvas.create_rectangle(589.0,166.0,797.0,274.0, fill="#401564",outline="")
     canvas.create_rectangle(359.0,287.0,491.0,380.0,fill="#F5F4FD",outline="")
     canvas.create_rectangle(512.0,287.0,644.0,380.0,fill="#F5F4FD",outline="")
     canvas.create_rectangle(665.0,287.0,797.0,380.0,fill="#F5F4FD",outline="")
     
     #Label for ESG Rating
-    canvas.create_text(513.0,175.0,anchor="nw",text="Overall Rating",fill="#FFFFFF",
+    canvas.create_text(400.0,175.0,anchor="nw",text="Overall Rating",fill="#FFFFFF",
+                       font=("Raleway Bold", 18 * -1))
+    canvas.create_text(633.0,175.0,anchor="nw",text="Industry Rank",fill="#FFFFFF",
                        font=("Raleway Bold", 18 * -1))
     canvas.create_text(380.0,303.0,anchor="nw",text="Environment",fill="#192159",
                        font=("Raleway Bold", 14 * -1))
@@ -118,8 +121,10 @@ def show_esg_rating(input_company) :
             else:
                 return "#FF8080"
         
-        #The values of the numbers 
-        canvas.create_text(547.0, 196.0, anchor="nw",text=esg_score, fill=what_color(),
+        #The values of the numbers
+        canvas.create_text(434.0, 196.0, anchor="nw",text=esg_score, fill=what_color(),
+                           font=("Raleway SemiBold", 48 * -1))
+        canvas.create_text(596.0, 196.0, anchor="nw",text=esg_rank, fill=what_color(),
                            font=("Raleway SemiBold", 48 * -1))
         canvas.create_text(406.0,323.0,anchor="nw",text=env_score,fill="#192159",
                            font=("Raleway SemiBold", 30 * -1))
