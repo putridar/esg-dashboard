@@ -275,7 +275,7 @@ def filter_link(link, company):
     Returns
     -------
     Boolean
-        True if the link contains one of the word in stop_words or if the link does not contain company name, else False
+        False if the link contains one of the word in the filters, else True
     '''
     filters = ["pinterest",".google","advertisement",".pdf","finance.yahoo","www."+company,company+".com"]
     for x in filters:
