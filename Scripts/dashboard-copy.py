@@ -25,7 +25,7 @@ import icma
 import ungc
 import iigcc
 import topic_model
-import logo
+import company_details
 
 ## FIREBASE
 import os
@@ -140,7 +140,7 @@ def show_company_profile(input_company):
                             fill="#F4F4FC",outline="")
     canvas.create_text(122.0,175.0,anchor="nw",text=input_company.upper(),
                        fill="#192159",font=("Raleway SemiBold", 24 * -1))
-    logo_list = logo.get_logo(input_company)
+    logo_list = company_details.get_logo(input_company)
     found = False
     for x in logo_list:
         try:
