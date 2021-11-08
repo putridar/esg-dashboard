@@ -275,8 +275,22 @@ def get_topic_model(company):
   topic_dist = lda_model_tfidf[inputCorpus[0]]
   for x in topic_dist:
     print(lda_model_tfidf.print_topic(x[0], topn=10))
-  print(topic_dist)
-  return topic_dist # Contains topic -> percentage in the form of a list of tuple
+  numberToTopic: {
+    3: 0,
+    7: 0,
+    9: 0,
+    10: 0,
+    2: 1,
+    4: 1,
+    6: 1,
+    5: 2
+  }
+  totalPercentage = [0, 0, 0]
+  for p in topic_dist:
+    if (p[0] in numberToTopic):
+      idx = numberToTopic[p[0]]
+      totalPercentage[idx]+=p[1]
+  return totalPercentage # Contains topic -> percentage in the form of a list of tuple
 
 def get_source(url):
     '''  
