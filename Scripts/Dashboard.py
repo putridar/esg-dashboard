@@ -44,7 +44,7 @@ from pathlib import Path
 
 # from tkinter import *
 # Explicit imports to satisfy Flake8
-from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
+from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Label
 
 
 OUTPUT_PATH = Path(__file__).parent
@@ -136,8 +136,11 @@ def show_esg_rating(input_company) :
     
 
 def show_company_profile(input_company):
+    #canvas.create_rectangle(0.0,150.0,295.0,800.0,
+    #                        fill='#F4F4FC',outline="")
+    #highlightthickness=4, highlightbackground="#37d3ff"
     canvas.create_rectangle(0.0,150.0,295.0,800.0,
-                            fill="#F4F4FC",outline="")
+                            fill='#F4F4FC',outline="")
     canvas.create_text(122.0,175.0,anchor="nw",text=input_company.upper(),
                        fill="#192159",font=("Raleway SemiBold", 24 * -1))
     logo_list = company_details.get_logo(input_company)
@@ -153,9 +156,15 @@ def show_company_profile(input_company):
             ratio = min(200/w, 100/h)
             resized = im.resize((int(w*ratio),int(h*ratio)), Image.ANTIALIAS)
             photo = ImageTk.PhotoImage(resized)
-            label = tk.Label(image=photo)
+            #label = tk.Label(image=photo)
+            #label = Label(canvas, image=photo)
+            bw = (295 - w*ratio)//2
+            #label = Label(canvas, image=photo, borderwidth = bw, relief = "solid")
+            label = Label(canvas, image=photo, highlightthickness=bw,
+                          highlightbackground="#F4F4FC",
+                          highlightcolor="#F4F4FC")
             label.image = photo
-            label.place(x=50, y = 240)
+            label.place(x=0, y = 300)
         except:
             continue
         else:
@@ -165,18 +174,24 @@ def show_company_profile(input_company):
     if not found:    
         canvas.create_rectangle(90.0,220.0,204.0,334.0,
                                 fill="#AE99C0",outline="")
-    canvas.create_text(97.0, 378.0,anchor="nw",text="Continent: Asia",
+    continent_country = company_details.get_country_continent(input_company)
+    canvas.create_text(95.0, 240.0,anchor="nw",text="Continent: "+continent_country[0],
                        fill="#000000",font=("Raleway Regular", 14 * -1))
-    canvas.create_text(98.0,354.0,anchor="nw",text="Country: Singapore",
+    canvas.create_text(95.0,220.0,anchor="nw",text="Country: "+continent_country[1],
                        fill="#000000",font=("Raleway Regular", 14 * -1))
 
 def show_summary(input_company):
     result = topic_model.get_summary(input_company)
     if not result:
         result = summary.get_summary(input_company)
-    #canvas.create_rectangle(833.0,123.0, 1371.0, 380.0, fill="white",outline="")
+    canvas.create_rectangle(833.0,123.0, 1371.0, 650.0, fill="white",outline="")
+    #canvas.create_rectangle(833.0,123.0, 1371.0, 650.0, fill="yellow",outline="")
     canvas.create_text(836.0, 123.0, anchor="nw",text="ESG Article Summarization",fill="#192159",
                        font=("Raleway Bold", 18 * -1))
+    print("number of words ", len(result))
+    if (len(result) < 1000) :
+        counter = (1000 - len(result))//100
+        result += "\n "*counter
     sum_label = tk.Label(canvas, text=result, font=("Raleway Bold", 14 * -1),
                  wraplength=500, justify="left", fg="#000000")
     sum_label.place(x=833, y=164)
