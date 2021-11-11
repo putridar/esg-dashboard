@@ -350,8 +350,8 @@ def get_logo(company):
         
     Returns
     -------
-    String
-        The link of the company logo
+    List
+        The links of the company logo
     '''
     results = scrape(company + " logo")
     print(results)
