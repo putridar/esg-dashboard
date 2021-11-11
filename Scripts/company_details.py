@@ -385,6 +385,13 @@ def get_logo(company):
       if res[0] == "/":
         res = main[2] + res
       logo_list.append(res)
+    final_logo = []
+    for logo in logo_list:
+        if "logos" in logo:
+            final_logo.append(logo)
+    for logo in logo_list:
+        if logo not in final_logo:
+            final_logo.append(logo)
     print(logo_list)
-    return logo_list
+    return final_logo
 
