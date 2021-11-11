@@ -4,7 +4,7 @@ This project is National University of Singapore BT4103 Capstone Project for Nat
 # How to use this
 1. Type ```git clone https://github.com/putridar/esg-dashboard.git``` in your terminal/command prompt
 2. Type ```cd esg-dashboard```
-3. Run ```pip install -r requirements.txt``` to install dependencies
+3. Run ```sudo pip install -r requirements.txt``` to install dependencies
 4. Run ```python -m spacy download en_core_web_sm```
 5. Run ```python -m spacy download en_core_web_lg```
 6. Run ```python dashboard-copy.py```
