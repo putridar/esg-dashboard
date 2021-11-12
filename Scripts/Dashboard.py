@@ -66,8 +66,8 @@ window.configure(bg = "#FFFFFF")
 
 
 def unavailable_refinitiv():
-    canvas.create_rectangle(350.0,270.0, 1200.0, 380.0, fill="black",outline="")
-    canvas.create_text(600.0, 310.0,anchor="nw",text='Sorry, the ESG Rating is unavailable',fill="white",
+    canvas.create_rectangle(359.0,166.0, 797.0, 380.0, fill="black",outline="")
+    canvas.create_text(370.0, 310.0,anchor="nw",text='Sorry, the ESG Rating is unavailable',fill="white",
                            font=("Raleway SemiBold", 18 * -1))
     
 def show_esg_rating(input_company) :
@@ -78,7 +78,7 @@ def show_esg_rating(input_company) :
                        fill="#192159",font=("Raleway Bold", 18 * -1))
     #bigbox
     #update
-    #canvas.create_rectangle(359.0,166.0, 797.0, 380.0, fill="#FFFFFF",outline="")
+    canvas.create_rectangle(359.0,166.0, 797.0, 380.0, fill="#FFFFFF",outline="")
     
     #Placeholder boxes for ESG Rating
     canvas.create_rectangle(359.0,166.0,567.0,274.0, fill="#401564",outline="")
@@ -136,9 +136,6 @@ def show_esg_rating(input_company) :
     
 
 def show_company_profile(input_company):
-    #canvas.create_rectangle(0.0,150.0,295.0,800.0,
-    #                        fill='#F4F4FC',outline="")
-    #highlightthickness=4, highlightbackground="#37d3ff"
     canvas.create_rectangle(0.0,150.0,295.0,800.0,
                             fill='#F4F4FC',outline="")
     canvas.create_text(122.0,175.0,anchor="nw",text=input_company.upper(),
@@ -160,7 +157,8 @@ def show_company_profile(input_company):
             #label = Label(canvas, image=photo)
             bw = (295 - w*ratio)//2
             #label = Label(canvas, image=photo, borderwidth = bw, relief = "solid")
-            label = Label(canvas, image=photo, highlightthickness=bw,
+            label = Label(canvas, image=photo,
+                          highlightthickness=bw,
                           highlightbackground="#F4F4FC",
                           highlightcolor="#F4F4FC")
             label.image = photo
@@ -185,10 +183,8 @@ def show_summary(input_company):
     if not result:
         result = summary.get_summary(input_company)
     canvas.create_rectangle(833.0,123.0, 1371.0, 650.0, fill="white",outline="")
-    #canvas.create_rectangle(833.0,123.0, 1371.0, 650.0, fill="yellow",outline="")
     canvas.create_text(836.0, 123.0, anchor="nw",text="ESG Article Summarization",fill="#192159",
                        font=("Raleway Bold", 18 * -1))
-    print("number of words ", len(result))
     if (len(result) < 1000) :
         counter = (1000 - len(result))//100
         result += "\n "*counter
